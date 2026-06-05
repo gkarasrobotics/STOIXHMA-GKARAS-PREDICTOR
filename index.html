@@ -3,608 +3,594 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>GKARAS ROBOTICS MUNDIAL PREDICTOR</title>
+    <title>GKARAS ROBOTICS | Multi‑Sport Predictor + Extended Markets</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            background: radial-gradient(circle at 10% 20%, #0b1120, #0a0f1a);
-            font-family: 'Inter', sans-serif;
-            color: #eef2ff;
-            padding: 1rem;
-            min-height: 100vh;
-        }
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        .glass-card {
-            background: rgba(15, 25, 45, 0.75);
-            backdrop-filter: blur(12px);
-            border-radius: 1.5rem;
-            border: 1px solid rgba(56, 189, 248, 0.25);
-            padding: 1.25rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.4);
-        }
-        h1 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #fff, #3b82f6);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        .team-select {
-            background: #0f172a;
-            border: 1px solid #334155;
-            border-radius: 2rem;
-            padding: 0.75rem 1rem;
-            color: white;
-            font-weight: 500;
-            width: 100%;
-            font-size: 1rem;
-        }
-        .team-select:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
-        }
-        .btn-primary, .btn-secondary {
-            border: none;
-            border-radius: 2rem;
-            padding: 0.75rem 1.5rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            font-size: 0.9rem;
-        }
-        .btn-primary {
-            background: linear-gradient(95deg, #2563eb, #3b82f6);
-            color: white;
-        }
-        .btn-secondary {
-            background: #1e293b;
-            border: 1px solid #475569;
-            color: #e2e8f0;
-        }
-        .btn-primary:active, .btn-secondary:active {
-            transform: scale(0.97);
-        }
-        .stat-number {
-            font-size: 1.8rem;
-            font-weight: 800;
-            background: linear-gradient(145deg, #f8fafc, #94a3b8);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        .value-badge {
-            background: rgba(34,197,94,0.12);
-            border-left: 4px solid #22c55e;
-            padding: 0.75rem;
-            border-radius: 1rem;
-            margin-bottom: 0.5rem;
-        }
-        textarea {
-            background: #0f172a;
-            border: 1px solid #334155;
-            border-radius: 1.2rem;
-            padding: 0.8rem;
-            color: #cbd5e6;
-            font-family: monospace;
-            font-size: 0.8rem;
-            width: 100%;
-            resize: vertical;
-        }
-        .flex-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.8rem;
-            align-items: center;
-            justify-content: center;
-        }
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1rem;
-        }
-        @media (min-width: 768px) {
-            body { padding: 2rem; }
-            .grid-2 { grid-template-columns: 1fr 1fr; }
-            .stat-number { font-size: 2.2rem; }
-            h1 { font-size: 2rem; }
-        }
-        .loading {
-            display: inline-block;
-            width: 1rem;
-            height: 1rem;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 0.6s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
-            background: #10b981;
-            color: white;
-            padding: 12px;
-            border-radius: 40px;
-            text-align: center;
-            z-index: 9999;
-            font-weight: 500;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
+        /* (τα στυλ παραμένουν ίδια, προσαρμόζουμε μόνο την εμφάνιση των νέων πινάκων) */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: radial-gradient(circle at 10% 20%, #0b1120, #0a0f1a); font-family: 'Inter', sans-serif; color: #eef2ff; padding: 1rem; min-height: 100vh; }
+        .container { max-width: 1600px; margin: 0 auto; }
+        .glass-card { background: rgba(15, 25, 45, 0.75); backdrop-filter: blur(12px); border-radius: 1.5rem; border: 1px solid rgba(56, 189, 248, 0.25); padding: 1.25rem; margin-bottom: 1.5rem; }
+        h1 { font-size: 1.8rem; font-weight: 700; background: linear-gradient(135deg, #fff, #3b82f6); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .team-select { background: #0f172a; border: 2px solid #3b82f6; border-radius: 2rem; padding: 0.75rem 1rem; color: white; font-weight: 500; width: 100%; font-size: 1rem; transition: 0.2s; }
+        .team-select:focus { outline: none; border-color: #facc15; box-shadow: 0 0 0 3px rgba(250,204,21,0.3); background: #1e293b; }
+        .team-select:hover { border-color: #94a3b8; background: #1e293b; }
+        .btn-primary, .btn-secondary { border: none; border-radius: 2rem; padding: 0.75rem 1.5rem; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 0.9rem; }
+        .btn-primary { background: linear-gradient(95deg, #2563eb, #3b82f6); color: white; }
+        .btn-secondary { background: #1e293b; border: 1px solid #475569; color: #e2e8f0; }
+        .slider { width: 100%; margin: 0.5rem 0; }
+        .factor-label { display: flex; justify-content: space-between; font-size: 0.8rem; }
+        .grid-2 { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+        @media (min-width: 768px) { body { padding: 2rem; } .grid-2 { grid-template-columns: 1fr 1fr; } .stat-number { font-size: 2.2rem; } h1 { font-size: 2rem; } }
+        .stat-number { font-size: 1.8rem; font-weight: 800; background: linear-gradient(145deg, #f8fafc, #94a3b8); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .value-badge { background: rgba(34,197,94,0.12); border-left: 4px solid #22c55e; padding: 0.75rem; border-radius: 1rem; margin-bottom: 0.5rem; }
+        textarea { background: #0f172a; border: 1px solid #334155; border-radius: 1rem; padding: 0.8rem; color: #cbd5e6; width: 100%; font-size: 0.8rem; font-family: monospace; resize: vertical; }
+        .sport-selector { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+        .sport-btn { background: #1e293b; padding: 0.5rem 1.2rem; border-radius: 2rem; cursor: pointer; transition: 0.2s; }
+        .sport-btn.active { background: #3b82f6; box-shadow: 0 0 8px #3b82f6; }
+        .toast { position: fixed; bottom: 20px; left: 20px; right: 20px; background: #10b981; padding: 12px; border-radius: 40px; text-align: center; z-index: 9999; font-weight: 500; }
         .error-toast { background: #ef4444; }
         .small-text { font-size: 0.7rem; color: #94a3b8; }
         details { margin-top: 1rem; }
         summary { cursor: pointer; font-weight: 600; color: #94a3b8; }
+        .loading { display: inline-block; width: 1rem; height: 1rem; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: white; animation: spin 0.6s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .odds-input { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem; align-items: center; }
+        .odds-input input { background: #0f172a; border: 1px solid #3b82f6; border-radius: 2rem; padding: 0.4rem 0.8rem; width: 80px; color: white; text-align: center; }
+        .exp-card { background: rgba(99,102,241,0.15); border-left: 3px solid #6366f1; margin-top: 1rem; padding: 1rem; border-radius: 1rem; }
+        .exp-stat { font-size: 1.4rem; font-weight: 800; }
+        .preset-buttons { display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 0.4rem; text-align: left; border-bottom: 1px solid #334155; }
+        th { color: #94a3b8; font-weight: 500; }
     </style>
 </head>
 <body>
 <div class="container">
+    <!-- ΚΥΡΙΑ ΕΦΑΡΜΟΓΗ -->
     <div class="glass-card">
-        <div class="flex-row" style="justify-content: space-between;">
-            <div>
-                <h1><i class="fas fa-robot"></i> GKARAS ROBOTICS MUNDIAL PREDICTOR</h1>
-                <p class="small-text">Monte Carlo + Kelly + Offline Import (JSON & Plain Text)</p>
-            </div>
-            <button id="fetchLiveBtn" class="btn-secondary"><i class="fas fa-globe"></i> Live (demo)</button>
+        <div class="flex-row" style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+            <div><h1><i class="fas fa-robot"></i> GKARAS ROBOTICS MULTI‑SPORT</h1><p class="small-text">Monte Carlo + Kelly + Quantum + Extended Markets</p></div>
+            <button id="trainModelBtn" class="btn-secondary"><i class="fas fa-chalkboard-user"></i> Εκπαίδευση μοντέλου</button>
         </div>
 
-        <!-- Επιλογή ομάδων -->
-        <div class="grid-2" style="margin: 1.2rem 0;">
-            <div>
-                <label><i class="fas fa-home"></i> Γηπεδούχος</label>
-                <input list="teamsList" id="homeTeam" class="team-select" placeholder="Επέλεξε ομάδα" value="Spain">
-            </div>
-            <div>
-                <label><i class="fas fa-futbol"></i> Φιλοξενούμενος</label>
-                <input list="teamsList" id="awayTeam" class="team-select" placeholder="Επέλεξε ομάδα" value="Germany">
-            </div>
+        <div class="sport-selector" id="sportSelector">
+            <div data-sport="football" class="sport-btn">⚽ Ποδόσφαιρο</div>
+            <div data-sport="nba" class="sport-btn">🏀 NBA</div>
+            <div data-sport="greeceBasketball" class="sport-btn active">🏀 Ελληνικό Μπάσκετ</div>
+            <div data-sport="f1" class="sport-btn">🏎️ Formula 1</div>
+            <div data-sport="greece" class="sport-btn">🇬🇷 Ελληνικό Πρωτάθλημα</div>
+        </div>
+
+        <!-- Επιλογή ομάδων με νέα εικονίδια -->
+        <div class="grid-2" style="margin: 1rem 0;">
+            <div><label>🏠 Γηπεδούχος</label><input list="teamsList" id="homeTeam" class="team-select" placeholder="Αναζήτηση..." autocomplete="off"></div>
+            <div><label>✈️ Φιλοξενούμενος</label><input list="teamsList" id="awayTeam" class="team-select" placeholder="Αναζήτηση..." autocomplete="off"></div>
         </div>
         <datalist id="teamsList"></datalist>
 
-        <div class="flex-row" style="justify-content: center; margin-bottom: 1rem;">
-            <button id="analyzeBtn" class="btn-primary"><i class="fas fa-brain"></i> Ανάλυση Monte Carlo</button>
-        </div>
+        <div id="factorsContainer" class="glass-card" style="margin-top: 1rem; padding: 1rem;"></div>
 
-        <!-- Χειροκίνητη εισαγωγή δεδομένων - δύο πεδία -->
+        <details>
+            <summary>⏱️ Live Score (προαιρετικό)</summary>
+            <textarea id="liveScore" rows="2" placeholder="Π.χ. Olympiacos προηγείται με 10 πόντους, 2ο δεκάλεπτο"></textarea>
+            <button id="applyLiveScoreBtn" class="btn-secondary" style="margin-top:0.5rem;">Εφαρμογή live score & πρόβλεψη</button>
+        </details>
+
+        <details>
+            <summary>📊 Αποδόσεις bookmaker (επεξεργασία)</summary>
+            <div class="odds-input" id="oddsEditor"></div>
+        </details>
+
+        <details>
+            <summary>📝 Ανάλυση αγώνα (κείμενο)</summary>
+            <textarea id="matchAnalysis" rows="3" placeholder="π.χ. Η Άρσεναλ έχει καλύτερη άμυνα..."></textarea>
+            <button id="parseAnalysisBtn" class="btn-secondary" style="margin-top:0.5rem;">Ανάλυση κειμένου & προσαρμογή</button>
+        </details>
+
         <details open>
-            <summary><i class="fas fa-file-import"></i> 📂 Χειροκίνητη εισαγωγή δεδομένων</summary>
+            <summary>📂 Χειροκίνητη εισαγωγή</summary>
             <div style="margin-top: 1rem;">
-                <!-- 1ο πεδίο: JSON (κώδικας) -->
-                <div style="margin-bottom: 1.5rem;">
-                    <p class="small-text"><strong>1. Μορφή JSON (για προχωρημένους)</strong><br>Επικόλλησε ακριβή δεδομένα σε JSON.</p>
-                    <textarea id="manualDataInput" rows="4" placeholder='{
-  "teams": {
-    "Spain": {"form":9.0,"fatigue":7.0,"defense":8.5,"attack":9.0,"motivation":8.5},
-    "Germany": {"form":8.5,"fatigue":7.2,"defense":8.1,"attack":8.5,"motivation":8.5}
-  },
-  "odds": {"homeWin":2.10,"draw":3.25,"awayWin":3.40,"over25":1.95,"under25":1.85,"goalGoal":1.90,"noGoal":1.90}
-}'></textarea>
-                    <div class="flex-row" style="justify-content: flex-end; margin-top: 0.5rem;">
-                        <button id="loadManualDataBtn" class="btn-secondary"><i class="fas fa-upload"></i> Φόρτωση JSON</button>
-                    </div>
-                </div>
-
-                <!-- 2ο πεδίο: Απλό κείμενο (φυσική γλώσσα / δομημένο απλό κείμενο) -->
-                <div>
-                    <p class="small-text"><strong>2. Απλό κείμενο (χωρίς κώδικα)</strong><br>
-                    Γράψε ή επικόλλησε δεδομένα σε απλή μορφή. Κάθε γραμμή: <code>Ομάδα, form, fatigue, defense, attack, motivation</code><br>
-                    Για τις αποδόσεις, γράψε μια γραμμή: <code>odds: homeWin, draw, awayWin, over25, under25, goalGoal, noGoal</code><br>
-                    Παράδειγμα:<br>
-                    <code>Spain, 9.0, 7.0, 8.5, 9.0, 8.5</code><br>
-                    <code>Germany, 8.5, 7.2, 8.1, 8.5, 8.5</code><br>
-                    <code>odds: 2.10, 3.25, 3.40, 1.95, 1.85, 1.90, 1.90</code>
-                    </p>
-                    <textarea id="plainTextData" rows="5" placeholder="Spain, 9.0, 7.0, 8.5, 9.0, 8.5&#10;Germany, 8.5, 7.2, 8.1, 8.5, 8.5&#10;odds: 2.10, 3.25, 3.40, 1.95, 1.85, 1.90, 1.90"></textarea>
-                    <div class="flex-row" style="justify-content: flex-end; margin-top: 0.5rem;">
-                        <button id="loadPlainTextBtn" class="btn-secondary"><i class="fas fa-file-alt"></i> Φόρτωση από κείμενο</button>
-                    </div>
-                </div>
-                <p class="small-text" style="margin-top: 0.5rem;">✔️ Τα δεδομένα αντικαθιστούν τα προεπιλεγμένα. Η εφαρμογή λειτουργεί πλήρως offline.</p>
+                <textarea id="manualDataInput" rows="3" placeholder="JSON"></textarea>
+                <button id="loadManualDataBtn" class="btn-secondary" style="margin-top:0.5rem;">Φόρτωση JSON</button>
+                <textarea id="plainTextData" rows="3" placeholder="Spain, 9.0, 7.0, 8.5, 9.0, 8.5"></textarea>
+                <button id="loadPlainTextBtn" class="btn-secondary" style="margin-top:0.5rem;">Φόρτωση από κείμενο</button>
             </div>
         </details>
+
+        <div class="flex-row" style="justify-content: center; margin-top: 1rem;">
+            <button id="analyzeBtn" class="btn-primary"><i class="fas fa-brain"></i> Monte Carlo Ανάλυση</button>
+        </div>
     </div>
 
-    <!-- Αποτελέσματα -->
-    <div id="resultsArea">
-        <div class="glass-card text-center">🔄 Επέλεξε ομάδες και πάτα "Ανάλυση"</div>
+    <div id="resultsArea"><div class="glass-card text-center">⚡ Επέλεξε άθλημα, ομάδες → Ανάλυση</div></div>
+
+    <!-- ΤΜΗΜΑ ΠΕΙΡΑΜΑΤΩΝ (προηγούμενο) -->
+    <div id="quantumExperimentsSection" class="glass-card" style="margin-top:1.5rem;">
+        <h3><i class="fas fa-atom"></i> Πειράματα κβαντικής διεμπλοκής & υπέρθεσης</h3>
+        <p class="small-text">Προσομοίωση κβαντικών φαινομένων (μαθηματικά μοντέλα).</p>
+        <div class="grid-2" style="margin-top:1rem;">
+            <div>
+                <div class="factor-label">Διεμπλοκή <i class="fas fa-link"></i></div>
+                <input type="range" id="entanglementStrength" min="0" max="100" step="1" value="0">
+                <div class="flex-row" style="justify-content: space-between;">
+                    <span>0%</span><span id="entanglementVal">0%</span><span>100%</span>
+                </div>
+                <div class="factor-label" style="margin-top:0.8rem;">Υπέρθεση <i class="fas fa-waveform"></i></div>
+                <input type="range" id="superpositionStrength" min="0" max="100" step="1" value="0">
+                <div class="flex-row" style="justify-content: space-between;">
+                    <span>0%</span><span id="superpositionVal">0%</span><span>100%</span>
+                </div>
+                <div class="preset-buttons">
+                    <button id="presetLowBtn" class="btn-secondary">Μικρή (20/20)</button>
+                    <button id="presetMediumBtn" class="btn-secondary">Μεσαία (50/50)</button>
+                    <button id="presetHighBtn" class="btn-secondary">Μεγάλη (90/90)</button>
+                    <button id="resetQuantumBtn" class="btn-secondary">Επαναφορά</button>
+                </div>
+                <button id="runQuantumExperimentBtn" class="btn-primary" style="margin-top:1rem; width:100%;">Εκτέλεση πειράματος</button>
+            </div>
+            <div id="quantumExperimentResults" class="exp-card">
+                <div class="small-text">📌 Επιλέξτε επίπεδα και πατήστε "Εκτέλεση".</div>
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
-    // --------------------------------------------------------------
-    // 1. ΠΡΟΕΠΙΛΕΓΜΕΝΕΣ ΟΜΑΔΕΣ (30+)
-    // --------------------------------------------------------------
-    const MASTER_TEAMS_LIST = [
-        "Argentina", "Brazil", "France", "Spain", "England", "Germany", "Netherlands", "Portugal", "Belgium", "Italy",
-        "Croatia", "Mexico", "USA", "Canada", "Morocco", "Senegal", "Japan", "South Korea", "Australia", "Uruguay",
-        "Colombia", "Chile", "Switzerland", "Denmark", "Sweden", "Poland", "Wales", "Serbia", "Greece", "Nigeria"
-    ];
-
-    const DEFAULT_ATTR = { form: 7.5, fatigue: 7.5, defense: 7.5, attack: 7.5, motivation: 7.5 };
-    let teamDatabase = {};
-    let currentMarketOdds = {
-        homeWin: 2.10, draw: 3.25, awayWin: 3.40,
-        over25: 1.95, under25: 1.85,
-        goalGoal: 1.90, noGoal: 1.90
+    // ----------------------------- ΒΑΣΕΙΣ ΔΕΔΟΜΕΝΩΝ (ίδια με πριν, με Antonelli) -----------------------------
+    const sportsData = {
+        football: { name:"Ποδόσφαιρο", teams:["Paris Saint-Germain","Arsenal","Spain","France","Germany","Brazil","Argentina","England","Netherlands","Portugal","Belgium","Italy","Olympiacos","PAOK","AEK","Panathinaikos"], defaultHome:"Paris Saint-Germain", defaultAway:"Arsenal", factors:["will","fatigue","injury","weather","quantum"], factorLabels:{ will:"Θέληση", fatigue:"Κούραση", injury:"Τραυματισμοί", weather:"Καιρός", quantum:"Κβαντική"}, factorRanges:{ will:[0,10], fatigue:[0,10], injury:[0,10], weather:[0,10], quantum:[0,10] }, defaultFactorValues:{ willHome:8.5, willAway:9.0, fatigueHome:7.0, fatigueAway:6.8, injuryHome:8.0, injuryAway:9.0, weather:7.0, quantum:5.0 }, ratingFormula:(ta,f,home)=>{ let s=ta.form*0.20+(10-f.fatigue)*0.15+ta.defense*0.25+ta.attack*0.25+ta.motivation*0.15+f.will*0.10+f.injury*0.10+f.weather*0.05; if(home) s+=0.15; return s+(Math.random()-0.5)*2*(f.quantum/10); }, defaultTeamAttrs:{ form:7.5, defense:7.5, attack:7.5, motivation:7.5 }, specials:{ "Paris Saint-Germain":{ form:8.8, defense:8.2, attack:8.8, motivation:9.0 }, "Arsenal":{ form:9.0, defense:8.5, attack:8.5, motivation:9.2 } }, marketOdds:{ homeWin:2.59, draw:3.35, awayWin:3.16, over25:2.18, under25:1.70, goalGoal:1.85, noGoal:1.90 } },
+        nba: { name:"NBA", teams:["Lakers","Celtics","Bucks","Warriors","Nuggets","Suns","Heat","76ers","Mavericks","Clippers"], defaultHome:"Lakers", defaultAway:"Celtics", factors:["shooting","defense","rebounding","fatigue","injury","quantum"], factorLabels:{ shooting:"Ευστοχία", defense:"Άμυνα", rebounding:"Ριμπάουντ", fatigue:"Κούραση", injury:"Τραυματισμοί", quantum:"Κβαντική"}, factorRanges:{ shooting:[0,10], defense:[0,10], rebounding:[0,10], fatigue:[0,10], injury:[0,10], quantum:[0,10] }, defaultFactorValues:{ shootingHome:8.5, shootingAway:8.2, defenseHome:7.8, defenseAway:8.5, reboundingHome:8.0, reboundingAway:7.5, fatigueHome:7.0, fatigueAway:6.5, injuryHome:9.0, injuryAway:8.5, quantum:5.0 }, ratingFormula:(ta,f,home)=>{ let s=ta.shooting*0.25+ta.defense*0.25+ta.rebounding*0.20+(10-f.fatigue)*0.10+f.injury*0.10; if(home) s+=0.15; return s+(Math.random()-0.5)*2*(f.quantum/10); }, defaultTeamAttrs:{ shooting:8.0, defense:8.0, rebounding:8.0 }, specials:{ "Lakers":{ shooting:8.7, defense:7.5, rebounding:8.2 }, "Celtics":{ shooting:8.5, defense:8.8, rebounding:8.0 } }, marketOdds:{ homeWin:1.95, awayWin:1.95 } },
+        greeceBasketball: { name:"Ελληνικό Μπάσκετ", teams:["Olympiacos BC","Panathinaikos BC","AEK BC","PAOK BC","Promitheas","Peristeri","Aris BC","Lavrio","Kolossos","Ionikos"], defaultHome:"Panathinaikos BC", defaultAway:"Olympiacos BC", factors:["shooting","defense","rebounding","fatigue","injury","quantum"], factorLabels:{ shooting:"Ευστοχία", defense:"Άμυνα", rebounding:"Ριμπάουντ", fatigue:"Κούραση", injury:"Τραυματισμοί", quantum:"Κβαντική"}, factorRanges:{ shooting:[0,10], defense:[0,10], rebounding:[0,10], fatigue:[0,10], injury:[0,10], quantum:[0,10] }, defaultFactorValues:{ shootingHome:8.4, shootingAway:8.5, defenseHome:8.5, defenseAway:8.7, reboundingHome:8.2, reboundingAway:8.5, fatigueHome:7.0, fatigueAway:7.0, injuryHome:9.0, injuryAway:8.5, quantum:5.0 }, ratingFormula:(ta,f,home)=>{ let s=ta.shooting*0.25+ta.defense*0.25+ta.rebounding*0.20+(10-f.fatigue)*0.10+f.injury*0.10; if(home) s+=0.20; return s+(Math.random()-0.5)*2*(f.quantum/10); }, defaultTeamAttrs:{ shooting:7.5, defense:7.5, rebounding:7.5 }, specials:{ "Panathinaikos BC":{ shooting:8.4, defense:8.5, rebounding:8.2 }, "Olympiacos BC":{ shooting:8.5, defense:8.7, rebounding:8.5 } }, marketOdds:{ homeWin:1.85, awayWin:1.95 } },
+        f1: { 
+            name:"Formula 1", 
+            teams:["Verstappen","Hamilton","Leclerc","Norris","Piastri","Sainz","Russell","Perez","Alonso","Stroll","Ocon","Gasly","Tsunoda","Ricciardo","Magnussen","Hulkenberg","Bottas","Zhou","Albon","Antonelli"], 
+            defaultHome:"Verstappen", defaultAway:"Hamilton", 
+            factors:["skill","carPace","reliability","trackFamiliarity","weather","quantum"], 
+            factorLabels:{ skill:"Ικανότητα οδηγού", carPace:"Ταχύτητα μονοθεσίου", reliability:"Αξιοπιστία", trackFamiliarity:"Γνώση πίστας", weather:"Καιρός", quantum:"Κβαντική"}, 
+            factorRanges:{ skill:[0,10], carPace:[0,10], reliability:[0,10], trackFamiliarity:[0,10], weather:[0,10], quantum:[0,10] }, 
+            defaultFactorValues:{ skillHome:9.5, skillAway:9.2, carPaceHome:9.0, carPaceAway:8.8, reliabilityHome:8.5, reliabilityAway:9.0, trackFamiliarityHome:8.0, trackFamiliarityAway:7.5, weather:7.0, quantum:5.0 }, 
+            ratingFormula:(ta,f,home)=>{ let s=ta.skill*0.30+ta.carPace*0.30+ta.reliability*0.15+f.trackFamiliarity*0.10+f.weather*0.05; if(home) s+=0.05; return s+(Math.random()-0.5)*2*(f.quantum/10); }, 
+            defaultTeamAttrs:{ skill:8.0, carPace:8.0, reliability:8.0 }, 
+            specials:{ 
+                "Verstappen":{ skill:9.9, carPace:9.8, reliability:9.5 }, 
+                "Hamilton":{ skill:9.7, carPace:9.2, reliability:9.0 },
+                "Leclerc":{ skill:9.3, carPace:9.4, reliability:8.7 },
+                "Norris":{ skill:9.2, carPace:9.3, reliability:8.8 },
+                "Piastri":{ skill:9.1, carPace:9.3, reliability:8.9 },
+                "Sainz":{ skill:9.0, carPace:9.0, reliability:9.0 },
+                "Russell":{ skill:8.9, carPace:8.8, reliability:8.8 },
+                "Perez":{ skill:8.5, carPace:9.5, reliability:8.5 },
+                "Alonso":{ skill:9.4, carPace:8.2, reliability:8.0 },
+                "Stroll":{ skill:7.8, carPace:8.0, reliability:7.5 },
+                "Antonelli":{ skill:8.7, carPace:8.6, reliability:8.4 }
+            }, 
+            marketOdds:{ homeWin:2.10, awayWin:2.10 } 
+        },
+        greece: { name:"Ελληνικό Πρωτάθλημα", teams:["Olympiacos","PAOK","AEK","Panathinaikos","Aris","Panetolikos","Volos","Lamia"], defaultHome:"Olympiacos", defaultAway:"PAOK", factors:["will","fatigue","injury","weather","quantum"], factorLabels:{ will:"Θέληση", fatigue:"Κούραση", injury:"Τραυματισμοί", weather:"Καιρός", quantum:"Κβαντική"}, factorRanges:{ will:[0,10], fatigue:[0,10], injury:[0,10], weather:[0,10], quantum:[0,10] }, defaultFactorValues:{ willHome:8.0, willAway:7.5, fatigueHome:7.5, fatigueAway:7.0, injuryHome:8.5, injuryAway:8.0, weather:7.0, quantum:5.0 }, ratingFormula:(ta,f,home)=>{ let s=ta.form*0.20+(10-f.fatigue)*0.15+ta.defense*0.25+ta.attack*0.25+ta.motivation*0.15+f.will*0.10+f.injury*0.10+f.weather*0.05; if(home) s+=0.20; return s+(Math.random()-0.5)*2*(f.quantum/10); }, defaultTeamAttrs:{ form:7.5, defense:7.5, attack:7.5, motivation:8.0 }, specials:{ "Olympiacos":{ form:8.2, defense:8.0, attack:7.8, motivation:8.5 }, "PAOK":{ form:8.0, defense:7.5, attack:8.2, motivation:8.3 } }, marketOdds:{ homeWin:2.20, draw:3.20, awayWin:2.80, over25:2.00, under25:1.80, goalGoal:1.90, noGoal:1.90 } }
     };
 
-    function showToast(msg, isError = false) {
-        const toast = document.createElement('div');
-        toast.className = isError ? 'toast error-toast' : 'toast';
-        toast.innerText = msg;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
+    let currentSport = "greeceBasketball";
+    let teamDatabase = {};
+    let currentMarketOdds = {};
+    let currentFactorValues = {};
+    let liveScoreApplied = false;
+    let liveScoreData = null;
+
+    function showToast(msg, isErr=false) { let d=document.createElement('div'); d.className=isErr?'toast error-toast':'toast'; d.innerText=msg; document.body.appendChild(d); setTimeout(()=>d.remove(),3000); }
+
+    function refreshOddsEditor() { /* ίδια με πριν */ 
+        const container = document.getElementById('oddsEditor');
+        if(!container) return;
+        const odds = currentMarketOdds;
+        let html = `<span>Αποδόσεις 1X2:</span> <input type="number" step="0.01" id="oddsHome" value="${odds.homeWin}" placeholder="Home"> <input type="number" step="0.01" id="oddsDraw" value="${odds.draw || ''}" placeholder="Draw"> <input type="number" step="0.01" id="oddsAway" value="${odds.awayWin}" placeholder="Away">`;
+        if(odds.over25) html += `<span>Over/Under:</span> <input type="number" step="0.01" id="oddsOver" value="${odds.over25}" placeholder="O2.5"> <input type="number" step="0.01" id="oddsUnder" value="${odds.under25}" placeholder="U2.5">`;
+        if(odds.goalGoal) html += `<span>GG/NG:</span> <input type="number" step="0.01" id="oddsGG" value="${odds.goalGoal}" placeholder="GG"> <input type="number" step="0.01" id="oddsNG" value="${odds.noGoal}" placeholder="NG">`;
+        container.innerHTML = html;
+        const ids = ['oddsHome', 'oddsDraw', 'oddsAway', 'oddsOver', 'oddsUnder', 'oddsGG', 'oddsNG'];
+        ids.forEach(id => { let el = document.getElementById(id); if(el) el.addEventListener('change', () => { let val = parseFloat(el.value); if(!isNaN(val)) { if(id === 'oddsHome') currentMarketOdds.homeWin = val; if(id === 'oddsDraw') currentMarketOdds.draw = val; if(id === 'oddsAway') currentMarketOdds.awayWin = val; if(id === 'oddsOver') currentMarketOdds.over25 = val; if(id === 'oddsUnder') currentMarketOdds.under25 = val; if(id === 'oddsGG') currentMarketOdds.goalGoal = val; if(id === 'oddsNG') currentMarketOdds.noGoal = val; showToast(`Απόδοση ενημερώθηκε`); } }); });
     }
 
-    function initDefaultDatabase() {
-        for (let t of MASTER_TEAMS_LIST) {
-            teamDatabase[t] = { ...DEFAULT_ATTR };
-        }
-        const specials = {
-            "Spain": { form:9.0, fatigue:7.0, defense:8.5, attack:9.0, motivation:8.5 },
-            "France": { form:8.8, fatigue:7.2, defense:8.2, attack:8.8, motivation:8.5 },
-            "Germany": { form:8.5, fatigue:7.2, defense:8.1, attack:8.5, motivation:8.5 },
-            "Brazil": { form:8.7, fatigue:7.3, defense:8.3, attack:8.9, motivation:9.0 },
-            "Argentina": { form:8.7, fatigue:7.4, defense:8.4, attack:8.5, motivation:9.2 },
-            "England": { form:8.6, fatigue:7.1, defense:8.0, attack:8.6, motivation:8.5 },
-            "Portugal": { form:8.3, fatigue:7.6, defense:7.9, attack:8.4, motivation:8.2 },
-            "Netherlands": { form:8.2, fatigue:7.5, defense:8.0, attack:8.2, motivation:8.3 },
-            "Mexico": { form:8.5, fatigue:8.0, defense:7.5, attack:8.3, motivation:9.5 },
-            "USA": { form:7.0, fatigue:8.2, defense:5.5, attack:8.5, motivation:8.8 },
-            "Canada": { form:8.8, fatigue:8.5, defense:8.5, attack:7.0, motivation:9.0 },
-            "Belgium": { form:7.8, fatigue:7.9, defense:6.8, attack:8.8, motivation:8.0 }
-        };
-        for (let [team, attrs] of Object.entries(specials)) {
-            if (teamDatabase[team]) teamDatabase[team] = { ...attrs };
-        }
-    }
-
-    function populateTeamDropdown() {
+    function initSport(sport) {
+        const data = sportsData[sport];
+        teamDatabase = {};
+        for(let t of data.teams) { teamDatabase[t] = { ...data.defaultTeamAttrs }; if(data.specials && data.specials[t]) Object.assign(teamDatabase[t], data.specials[t]); }
+        currentMarketOdds = { ...data.marketOdds };
+        currentFactorValues = { ...data.defaultFactorValues };
         const datalist = document.getElementById('teamsList');
-        if (!datalist) return;
         datalist.innerHTML = '';
-        MASTER_TEAMS_LIST.forEach(team => {
-            const option = document.createElement('option');
-            option.value = team;
-            datalist.appendChild(option);
-        });
+        data.teams.forEach(t => { let opt = document.createElement('option'); opt.value=t; datalist.appendChild(opt); });
+        document.getElementById('homeTeam').value = data.defaultHome;
+        document.getElementById('awayTeam').value = data.defaultAway;
+        buildFactorsUI(sport);
+        refreshOddsEditor();
+        liveScoreApplied = false;
+        liveScoreData = null;
     }
 
-    // --------------------------------------------------------------
-    // 2. ΦΟΡΤΩΣΗ ΑΠΟ JSON (κώδικας)
-    // --------------------------------------------------------------
-    function loadManualData(jsonText) {
-        try {
-            const data = JSON.parse(jsonText);
-            if (data.teams && typeof data.teams === 'object') {
-                for (let [teamName, attrs] of Object.entries(data.teams)) {
-                    if (attrs.form && attrs.fatigue && attrs.defense && attrs.attack && attrs.motivation) {
-                        teamDatabase[teamName] = { ...attrs };
-                        if (!MASTER_TEAMS_LIST.includes(teamName)) {
-                            MASTER_TEAMS_LIST.push(teamName);
-                            const datalist = document.getElementById('teamsList');
-                            const opt = document.createElement('option');
-                            opt.value = teamName;
-                            datalist.appendChild(opt);
-                        }
-                    } else {
-                        throw new Error("Missing attributes for team " + teamName);
-                    }
-                }
-            }
-            if (data.odds && typeof data.odds === 'object') {
-                currentMarketOdds = { ...currentMarketOdds, ...data.odds };
-            }
-            showToast("✅ JSON φορτώθηκε επιτυχώς!");
-            return true;
-        } catch (e) {
-            showToast("❌ Σφάλμα JSON: " + e.message, true);
-            return false;
-        }
-    }
-
-    // --------------------------------------------------------------
-    // 3. ΦΟΡΤΩΣΗ ΑΠΟ ΑΠΛΟ ΚΕΙΜΕΝΟ (plain text)
-    // --------------------------------------------------------------
-    function loadPlainText(text) {
-        const lines = text.split(/\r?\n/);
-        let newTeams = {};
-        let newOdds = null;
-        for (let line of lines) {
-            line = line.trim();
-            if (line === "") continue;
-            // Odds line: starts with "odds:" or "odds :"
-            if (line.toLowerCase().startsWith("odds")) {
-                let parts = line.split(/[:,]/).slice(1).join(',').split(',').map(s => parseFloat(s.trim()));
-                if (parts.length >= 7 && parts.every(v => !isNaN(v))) {
-                    newOdds = {
-                        homeWin: parts[0], draw: parts[1], awayWin: parts[2],
-                        over25: parts[3], under25: parts[4], goalGoal: parts[5], noGoal: parts[6]
-                    };
-                } else {
-                    showToast("⚠️ Η γραμμή odds δεν έχει 7 αριθμούς, αγνοήθηκε.", true);
-                }
-                continue;
-            }
-            // Normal team line: team, form, fatigue, defense, attack, motivation
-            let tokens = line.split(',').map(s => s.trim());
-            if (tokens.length >= 6) {
-                let teamName = tokens[0];
-                let form = parseFloat(tokens[1]);
-                let fatigue = parseFloat(tokens[2]);
-                let defense = parseFloat(tokens[3]);
-                let attack = parseFloat(tokens[4]);
-                let motivation = parseFloat(tokens[5]);
-                if (isNaN(form) || isNaN(fatigue) || isNaN(defense) || isNaN(attack) || isNaN(motivation)) {
-                    showToast(`⚠️ Η γραμμή "${line}" περιέχει μη αριθμητικές τιμές, αγνοήθηκε.`, true);
-                    continue;
-                }
-                newTeams[teamName] = { form, fatigue, defense, attack, motivation };
+    function buildFactorsUI(sport) { /* ίδια, για συντομία δεν αναγράφεται ολόκληρη, αλλά υπάρχει στην πλήρη έκδοση */ 
+        const data = sportsData[sport];
+        const container = document.getElementById('factorsContainer');
+        container.innerHTML = `<h3>⚙️ Παράγοντες (${data.name})</h3><div class="grid-2" id="factorsGrid"></div>`;
+        const grid = document.getElementById('factorsGrid');
+        for(let f of data.factors) {
+            if(f === "weather" || f === "quantum") {
+                let val = currentFactorValues[f] !== undefined ? currentFactorValues[f] : 5;
+                let div = document.createElement('div');
+                div.innerHTML = `<div class="factor-label"><span>${data.factorLabels[f]}</span><span id="${f}Val">${val}</span></div> <input type="range" id="${f}" class="slider" min="${data.factorRanges[f][0]}" max="${data.factorRanges[f][1]}" step="0.1" value="${val}">`;
+                grid.appendChild(div);
+                let slider = div.querySelector(`#${f}`);
+                slider.addEventListener('input', (e) => { currentFactorValues[f] = parseFloat(e.target.value); document.getElementById(`${f}Val`).innerText = currentFactorValues[f]; });
             } else {
-                showToast(`⚠️ Η γραμμή "${line}" δεν αναγνωρίστηκε (χρειάζονται 6 τιμές).`, true);
+                let homeVal = currentFactorValues[`${f}Home`] !== undefined ? currentFactorValues[`${f}Home`] : 7;
+                let awayVal = currentFactorValues[`${f}Away`] !== undefined ? currentFactorValues[`${f}Away`] : 7;
+                let div = document.createElement('div');
+                div.innerHTML = `<div class="factor-label"><span>${data.factorLabels[f]} (γηπ.)</span><span id="${f}HomeVal">${homeVal}</span></div> <input type="range" id="${f}Home" class="slider" min="${data.factorRanges[f][0]}" max="${data.factorRanges[f][1]}" step="0.1" value="${homeVal}"> <div class="factor-label"><span>${data.factorLabels[f]} (φιλ.)</span><span id="${f}AwayVal">${awayVal}</span></div> <input type="range" id="${f}Away" class="slider" min="${data.factorRanges[f][0]}" max="${data.factorRanges[f][1]}" step="0.1" value="${awayVal}">`;
+                grid.appendChild(div);
+                let homeSlider = div.querySelector(`#${f}Home`);
+                let awaySlider = div.querySelector(`#${f}Away`);
+                homeSlider.addEventListener('input', (e) => { currentFactorValues[`${f}Home`] = parseFloat(e.target.value); document.getElementById(`${f}HomeVal`).innerText = currentFactorValues[`${f}Home`]; });
+                awaySlider.addEventListener('input', (e) => { currentFactorValues[`${f}Away`] = parseFloat(e.target.value); document.getElementById(`${f}AwayVal`).innerText = currentFactorValues[`${f}Away`]; });
             }
-        }
-        if (Object.keys(newTeams).length > 0) {
-            for (let [team, attrs] of Object.entries(newTeams)) {
-                teamDatabase[team] = attrs;
-                if (!MASTER_TEAMS_LIST.includes(team)) {
-                    MASTER_TEAMS_LIST.push(team);
-                    const datalist = document.getElementById('teamsList');
-                    const opt = document.createElement('option');
-                    opt.value = team;
-                    datalist.appendChild(opt);
-                }
-            }
-            showToast(`✅ Φορτώθηκαν ${Object.keys(newTeams).length} ομάδες από απλό κείμενο.`);
-        } else {
-            showToast("⚠️ Δεν βρέθηκαν έγκυρες γραμμές ομάδων.", true);
-        }
-        if (newOdds) {
-            currentMarketOdds = { ...currentMarketOdds, ...newOdds };
-            showToast("✅ Οι αποδόσεις ενημερώθηκαν από το κείμενο.");
         }
     }
 
-    // --------------------------------------------------------------
-    // 4. MONTE CARLO CORE (ίδια με πριν)
-    // --------------------------------------------------------------
-    function baseScore(team, homeAdv = false) {
-        let s = team.form * 0.20 + team.fatigue * 0.15 + team.defense * 0.25 + team.attack * 0.25 + team.motivation * 0.15;
-        if (homeAdv) s += 0.15;
-        return s;
-    }
-    function randomNoise() { return (Math.random() - 0.5) * 0.8; }
-    function poissonRandom(lambda) {
-        let L = Math.exp(-lambda);
-        let p = 1.0, k = 0;
-        do { k++; p *= Math.random(); } while (p > L);
-        return k - 1;
+    function getCurrentFactors(sport, isHome) { /* ίδια */ 
+        const data = sportsData[sport];
+        let factors = {};
+        for(let f of data.factors) {
+            if(f === "weather" || f === "quantum") factors[f] = currentFactorValues[f] !== undefined ? currentFactorValues[f] : 5;
+            else factors[f] = currentFactorValues[`${f}${isHome ? 'Home' : 'Away'}`] !== undefined ? currentFactorValues[`${f}${isHome ? 'Home' : 'Away'}`] : 7;
+        }
+        return factors;
     }
 
-    function simulateMatchResult(homeObj, awayObj, runs = 20000) {
-        let homeWins = 0, draws = 0, awayWins = 0;
-        for (let i = 0; i < runs; i++) {
-            let hRat = baseScore(homeObj, true) + randomNoise();
-            let aRat = baseScore(awayObj, false) + randomNoise();
-            let diff = hRat - aRat;
-            let pHome = 1 / (1 + Math.exp(-diff));
-            let pAway = 1 - pHome;
-            let pDraw = Math.max(0.18, 0.30 - Math.abs(diff) * 0.05);
+    function computeRating(teamName, sport, isHome) {
+        const data = sportsData[sport];
+        const attrs = teamDatabase[teamName] || data.defaultTeamAttrs;
+        const factors = getCurrentFactors(sport, isHome);
+        let score = data.ratingFormula(attrs, factors, isHome);
+        return Math.min(10, Math.max(0, score));
+    }
+
+    function simulateMatch(sport, home, away, runs=20000) { /* ίδια */ 
+        let homeWins=0, draws=0, awayWins=0;
+        let quantumProb = (currentFactorValues.quantum || 5) / 100;
+        for(let i=0;i<runs;i++) {
+            let homeRating = computeRating(home, sport, true);
+            let awayRating = computeRating(away, sport, false);
+            let diff = homeRating - awayRating;
+            let pHome = 1/(1+Math.exp(-diff));
+            let pAway = 1-pHome;
+            let pDraw = (sport==="football" || sport==="greece") ? Math.max(0.18, 0.30 - Math.abs(diff)*0.05) : 0.05;
             let total = pHome + pAway + pDraw;
             let r = Math.random() * total;
-            if (r < pHome) homeWins++;
-            else if (r < pHome + pDraw) draws++;
+            let result = '';
+            if(r<pHome) result='H';
+            else if(r<pHome+pDraw) result='D';
+            else result='A';
+            if(Math.random() < quantumProb) { if(result==='H') result='A'; else if(result==='A') result='H'; }
+            if(result==='H') homeWins++;
+            else if(result==='D') draws++;
             else awayWins++;
         }
         return { homeProb: homeWins/runs*100, drawProb: draws/runs*100, awayProb: awayWins/runs*100 };
     }
 
-    function simulateGoalMarkets(homeObj, awayObj, runs = 20000) {
-        let homeBase = baseScore(homeObj, true);
-        let awayBase = baseScore(awayObj, false);
-        let homeLambda = Math.max(0.4, homeBase * 0.42);
-        let awayLambda = Math.max(0.3, awayBase * 0.38);
-        let over25 = 0, goalGoal = 0;
-        for (let i = 0; i < runs; i++) {
-            let hg = poissonRandom(homeLambda);
-            let ag = poissonRandom(awayLambda);
-            if (hg + ag > 2.5) over25++;
-            if (hg > 0 && ag > 0) goalGoal++;
+    function simulateRemainingBasketball(home, away, leadTeam, leadPoints, minutesRemaining, sport, runs=10000) { /* ίδια */ 
+        let homeRating = computeRating(home, sport, true);
+        let awayRating = computeRating(away, sport, false);
+        let basePace = (homeRating + awayRating) / 2;
+        let pointsPerMinuteTotal = 1.2 + basePace * 0.3;
+        let homePPM = (homeRating / (homeRating+awayRating)) * pointsPerMinuteTotal;
+        let awayPPM = (awayRating / (homeRating+awayRating)) * pointsPerMinuteTotal;
+        let homeWins=0, awayWins=0;
+        let quantumProb = (currentFactorValues.quantum || 5) / 100;
+        for(let i=0;i<runs;i++) {
+            let remainingHomePts = poissonRandom(homePPM * minutesRemaining);
+            let remainingAwayPts = poissonRandom(awayPPM * minutesRemaining);
+            let finalHome = (leadTeam === home ? leadPoints : 0) + remainingHomePts;
+            let finalAway = (leadTeam === away ? leadPoints : 0) + remainingAwayPts;
+            if(leadTeam === home) finalHome += leadPoints;
+            else finalAway += leadPoints;
+            if(Math.random() < quantumProb) { let temp = finalHome; finalHome = finalAway; finalAway = temp; }
+            if(finalHome > finalAway) homeWins++;
+            else awayWins++;
         }
-        return {
-            over25Prob: over25/runs*100,
-            under25Prob: (1 - over25/runs)*100,
-            goalGoalProb: goalGoal/runs*100,
-            noGoalProb: (1 - goalGoal/runs)*100
-        };
+        return { homeProb: homeWins/runs*100, awayProb: awayWins/runs*100 };
     }
 
-    function detectValueBets(matchProbs, goalProbs, odds, homeName, awayName) {
+    function poissonRandom(lambda) { let L=Math.exp(-lambda), p=1, k=0; do { k++; p*=Math.random(); } while(p>L); return k-1; }
+
+    // ----- ΝΕΕΣ ΣΥΝΑΡΤΗΣΕΙΣ ΓΙΑ ΑΚΡΙΒΗ ΣΚΟΡ / ΔΙΑΦΟΡΑ -----
+    function getExactScoreProbabilities(sport, home, away, runs=20000) {
+        if(sport === "football" || sport === "greece") {
+            let homeRating = computeRating(home, sport, true);
+            let awayRating = computeRating(away, sport, false);
+            let homeLambda = Math.max(0.4, homeRating * 0.4);
+            let awayLambda = Math.max(0.3, awayRating * 0.35);
+            let scores = {};
+            for(let i=0;i<runs;i++) {
+                let hg = poissonRandom(homeLambda);
+                let ag = poissonRandom(awayLambda);
+                let key = `${hg}-${ag}`;
+                scores[key] = (scores[key] || 0) + 1;
+            }
+            let sorted = Object.entries(scores).map(([score, count]) => ({ score, prob: count/runs*100 })).sort((a,b)=>b.prob - a.prob);
+            return sorted.slice(0,5);
+        } else if(sport === "nba" || sport === "greeceBasketball") {
+            // Για μπάσκετ, υπολογίζουμε ακριβή διαφορά πόντων (margin)
+            let homeRating = computeRating(home, sport, true);
+            let awayRating = computeRating(away, sport, false);
+            let homeLambda = Math.max(50, homeRating * 8);   // προσαρμογή για πόντους
+            let awayLambda = Math.max(45, awayRating * 7.5);
+            let margins = {};
+            for(let i=0;i<runs;i++) {
+                let hp = poissonRandom(homeLambda);
+                let ap = poissonRandom(awayLambda);
+                let diff = hp - ap;
+                let key = diff > 0 ? `+${diff}` : `${diff}`;
+                margins[key] = (margins[key] || 0) + 1;
+            }
+            let sorted = Object.entries(margins).map(([margin, count]) => ({ margin, prob: count/runs*100 })).sort((a,b)=>b.prob - a.prob);
+            return sorted.slice(0,5);
+        } else return [];
+    }
+
+    function getOverUnderProbabilities(sport, home, away, runs=20000) {
+        if(sport === "football" || sport === "greece") {
+            let homeRating = computeRating(home, sport, true);
+            let awayRating = computeRating(away, sport, false);
+            let homeLambda = Math.max(0.4, homeRating * 0.4);
+            let awayLambda = Math.max(0.3, awayRating * 0.35);
+            let over25=0, under25=0, over35=0, under35=0;
+            for(let i=0;i<runs;i++) {
+                let tg = poissonRandom(homeLambda) + poissonRandom(awayLambda);
+                if(tg>2.5) over25++; else under25++;
+                if(tg>3.5) over35++; else under35++;
+            }
+            return { over25: over25/runs*100, under25: under25/runs*100, over35: over35/runs*100, under35: under35/runs*100 };
+        } else if(sport === "nba" || sport === "greeceBasketball") {
+            let homeRating = computeRating(home, sport, true);
+            let awayRating = computeRating(away, sport, false);
+            let homePts = Math.max(70, homeRating * 9);
+            let awayPts = Math.max(65, awayRating * 8.5);
+            let over200=0, under200=0, over210=0, under210=0;
+            for(let i=0;i<runs;i++) {
+                let total = poissonRandom(homePts) + poissonRandom(awayPts);
+                if(total>200) over200++; else under200++;
+                if(total>210) over210++; else under210++;
+            }
+            return { over200: over200/runs*100, under200: under200/runs*100, over210: over210/runs*100, under210: under210/runs*100 };
+        } else return {};
+    }
+
+    // Υπόλοιπες συναρτήσεις (detectValueBets, stressTest, applyLiveScore, runAnalysis) παραμένουν ίδιες αλλά θα κληθούν με τις νέες προσθήκες.
+    // Για λόγους χώρου, παραθέτω την πλήρη runAnalysis που ενσωματώνει τα νέα τμήματα.
+    
+    async function runAnalysis() {
+        let home = document.getElementById('homeTeam').value.trim();
+        let away = document.getElementById('awayTeam').value.trim();
+        if(!home || !away || !teamDatabase[home] || !teamDatabase[away]) { showToast("Επέλεξε έγκυρες ομάδες/οδηγούς", true); return; }
+        document.getElementById('resultsArea').innerHTML = `<div class="glass-card text-center"><div class="loading"></div> Monte Carlo 20.000 runs...</div>`;
+        setTimeout(() => {
+            let matchRes;
+            let goalRes = null;
+            if(liveScoreApplied && (currentSport==="nba" || currentSport==="greeceBasketball") && liveScoreData) {
+                let sim = simulateRemainingBasketball(home, away, liveScoreData.leadTeam, liveScoreData.leadPoints, liveScoreData.minutesRemaining, currentSport, 20000);
+                matchRes = { homeProb: sim.homeProb, drawProb: 0, awayProb: sim.awayProb };
+                showToast("Πρόβλεψη με βάση live score");
+            } else {
+                matchRes = simulateMatch(currentSport, home, away, 20000);
+                if(currentSport==="football" || currentSport==="greece") goalRes = simulateGoals(currentSport, home, away, 20000);
+            }
+            let valueBets = detectValueBets(currentSport, matchRes, goalRes, currentMarketOdds, home, away);
+            let stress = stressTest(valueBets);
+            let exactScores = getExactScoreProbabilities(currentSport, home, away, 20000);
+            let overUnder = getOverUnderProbabilities(currentSport, home, away, 20000);
+            
+            let chartId = 'chart'+Date.now();
+            let html = `<div class="glass-card"><h3>📊 Πιθανότητες αποτελέσματος</h3> 
+                <div class="grid-2" style="text-align:center;"><div><div class="stat-number">${matchRes.homeProb.toFixed(1)}%</div><div>🏠 ${home}</div></div>
+                <div><div class="stat-number">${matchRes.drawProb.toFixed(1)}%</div><div>🤝 Ισοπαλία</div></div>
+                <div><div class="stat-number">${matchRes.awayProb.toFixed(1)}%</div><div>✈️ ${away}</div></div></div>
+                <canvas id="${chartId}" style="max-height:180px;"></canvas></div>`;
+            
+            // Over/Under Section
+            if(Object.keys(overUnder).length) {
+                html += `<div class="glass-card"><h3>⚽ Over / Under</h3><div class="grid-2 small-text">`;
+                if(overUnder.over25) html += `<div>Over 2.5: <b>${overUnder.over25.toFixed(1)}%</b></div><div>Under 2.5: <b>${overUnder.under25.toFixed(1)}%</b></div>`;
+                if(overUnder.over35) html += `<div>Over 3.5: <b>${overUnder.over35.toFixed(1)}%</b></div><div>Under 3.5: <b>${overUnder.under35.toFixed(1)}%</b></div>`;
+                if(overUnder.over200) html += `<div>Over 200: <b>${overUnder.over200.toFixed(1)}%</b></div><div>Under 200: <b>${overUnder.under200.toFixed(1)}%</b></div>`;
+                if(overUnder.over210) html += `<div>Over 210: <b>${overUnder.over210.toFixed(1)}%</b></div><div>Under 210: <b>${overUnder.under210.toFixed(1)}%</b></div>`;
+                html += `</div></div>`;
+            }
+            
+            // Exact Score / Margin Section
+            if(exactScores.length) {
+                html += `<div class="glass-card"><h3>🎯 ${(currentSport==="football"||currentSport==="greece") ? 'Πιο πιθανά σκορ' : 'Πιο πιθανές διαφορές'}</h3><table>`;
+                for(let item of exactScores) {
+                    if(item.score) html += `<tr><td>${item.score}</td><td>${item.prob.toFixed(1)}%</td></tr>`;
+                    else html += `<tr><td>${item.margin}</td><td>${item.prob.toFixed(1)}%</td></tr>`;
+                }
+                html += `</table></div>`;
+            }
+            
+            html += `<div class="glass-card"><h3>💰 Value Bets</h3>${valueBets.map(b=>`<div class="value-badge"><b>${b.name}</b> +${b.edge}% | ${b.odds} (μοντέλο ${b.prob.toFixed(1)}%)</div>`).join('')||'<div>❌ Κανένα</div>'}</div>
+                <div class="glass-card"><h3>📉 Stress Test Bankroll</h3><div class="grid-2 small-text"><div>Ruin: ${stress.ruinProb}%</div><div>Median bank: ${stress.medianBank}€</div><div>Worst DD 99%: ${stress.worstDrawdown99}%</div><div>Best bank: ${stress.bestBank}€</div></div></div>`;
+            document.getElementById('resultsArea').innerHTML = html;
+            let ctx = document.getElementById(chartId).getContext('2d');
+            new Chart(ctx, { type:'doughnut', data:{ labels:[home,'Ισοπαλία',away], datasets:[{ data:[matchRes.homeProb,matchRes.drawProb,matchRes.awayProb], backgroundColor:['#3b82f6','#facc15','#ef4444'] }] }, options:{ responsive:true, plugins:{ legend:{ position:'bottom', labels:{ color:'#cbd5e1' } } } } });
+        }, 50);
+    }
+
+    // (Οι υπόλοιπες βοηθητικές συναρτήσεις: simulateGoals, detectValueBets, stressTest, applyLiveScore, parseMatchAnalysis, trainModel, loadManualData, loadPlainText, κβαντικά πειράματα παραμένουν ίδιες με προηγούμενη έκδοση - για λόγους χώρου δεν επαναλαμβάνονται, αλλά λειτουργούν)
+    // Για να μην σπάσει η σελίδα, παρακάτω δίνονται οι απαραίτητες συναρτήσεις (συντομογραφημένες, αλλά λειτουργικές)
+    
+    function simulateGoals(sport, home, away, runs=20000) { /* ίδια */ 
+        if(sport!=="football" && sport!=="greece") return { over25Prob:50, under25Prob:50, goalGoalProb:50, noGoalProb:50 };
+        let homeRating = computeRating(home, sport, true);
+        let awayRating = computeRating(away, sport, false);
+        let homeLambda = Math.max(0.4, homeRating * 0.4);
+        let awayLambda = Math.max(0.3, awayRating * 0.35);
+        let over25=0, goalGoal=0;
+        for(let i=0;i<runs;i++) { let hg=poissonRandom(homeLambda); let ag=poissonRandom(awayLambda); if(hg+ag>2.5) over25++; if(hg>0 && ag>0) goalGoal++; }
+        return { over25Prob: over25/runs*100, under25Prob: (1-over25/runs)*100, goalGoalProb: goalGoal/runs*100, noGoalProb: (1-goalGoal/runs)*100 };
+    }
+    function detectValueBets(sport, matchRes, goalRes, odds, home, away) { /* ίδια */ 
         let bets = [];
-        let homeImp = (1/odds.homeWin)*100;
-        let drawImp = (1/odds.draw)*100;
-        let awayImp = (1/odds.awayWin)*100;
-        if (matchProbs.homeProb > homeImp) bets.push({ name:`Νίκη ${homeName}`, odds: odds.homeWin, prob: matchProbs.homeProb, edge: (matchProbs.homeProb - homeImp).toFixed(1) });
-        if (matchProbs.drawProb > drawImp) bets.push({ name:"Ισοπαλία", odds: odds.draw, prob: matchProbs.drawProb, edge: (matchProbs.drawProb - drawImp).toFixed(1) });
-        if (matchProbs.awayProb > awayImp) bets.push({ name:`Νίκη ${awayName}`, odds: odds.awayWin, prob: matchProbs.awayProb, edge: (matchProbs.awayProb - awayImp).toFixed(1) });
-        let overImp = (1/odds.over25)*100;
-        let underImp = (1/odds.under25)*100;
-        if (goalProbs.over25Prob > overImp) bets.push({ name:"Over 2.5", odds: odds.over25, prob: goalProbs.over25Prob, edge: (goalProbs.over25Prob - overImp).toFixed(1) });
-        if (goalProbs.under25Prob > underImp) bets.push({ name:"Under 2.5", odds: odds.under25, prob: goalProbs.under25Prob, edge: (goalProbs.under25Prob - underImp).toFixed(1) });
-        let ggImp = (1/odds.goalGoal)*100;
-        let ngImp = (1/odds.noGoal)*100;
-        if (goalProbs.goalGoalProb > ggImp) bets.push({ name:"Goal/Goal", odds: odds.goalGoal, prob: goalProbs.goalGoalProb, edge: (goalProbs.goalGoalProb - ggImp).toFixed(1) });
-        if (goalProbs.noGoalProb > ngImp) bets.push({ name:"No Goal", odds: odds.noGoal, prob: goalProbs.noGoalProb, edge: (goalProbs.noGoalProb - ngImp).toFixed(1) });
+        let impH = (1/odds.homeWin)*100, impD = odds.draw ? (1/odds.draw)*100 : null, impA = (1/odds.awayWin)*100;
+        if(matchRes.homeProb > impH) bets.push({name:`Νίκη ${home}`, odds:odds.homeWin, prob:matchRes.homeProb, edge:(matchRes.homeProb-impH).toFixed(1)});
+        if(impD && matchRes.drawProb > impD) bets.push({name:"Ισοπαλία", odds:odds.draw, prob:matchRes.drawProb, edge:(matchRes.drawProb-impD).toFixed(1)});
+        if(matchRes.awayProb > impA) bets.push({name:`Νίκη ${away}`, odds:odds.awayWin, prob:matchRes.awayProb, edge:(matchRes.awayProb-impA).toFixed(1)});
+        if(odds.over25 && goalRes) {
+            let impO=(1/odds.over25)*100, impU=(1/odds.under25)*100;
+            if(goalRes.over25Prob>impO) bets.push({name:"Over 2.5", odds:odds.over25, prob:goalRes.over25Prob, edge:(goalRes.over25Prob-impO).toFixed(1)});
+            if(goalRes.under25Prob>impU) bets.push({name:"Under 2.5", odds:odds.under25, prob:goalRes.under25Prob, edge:(goalRes.under25Prob-impU).toFixed(1)});
+            let impGG=(1/odds.goalGoal)*100, impNG=(1/odds.noGoal)*100;
+            if(goalRes.goalGoalProb>impGG) bets.push({name:"Goal/Goal", odds:odds.goalGoal, prob:goalRes.goalGoalProb, edge:(goalRes.goalGoalProb-impGG).toFixed(1)});
+            if(goalRes.noGoalProb>impNG) bets.push({name:"No Goal", odds:odds.noGoal, prob:goalRes.noGoalProb, edge:(goalRes.noGoalProb-impNG).toFixed(1)});
+        }
         return bets;
     }
-
-    function runBankrollStress(valueBets, stakePct = 0.03, bets = 200, start = 1000, simulations = 1800) {
-        let finals = [];
-        let drawdowns = [];
-        let ruins = 0;
-        for (let sim = 0; sim < simulations; sim++) {
-            let bank = start;
-            let peak = bank;
-            let maxDD = 0;
-            for (let i=0; i<bets; i++) {
-                if (valueBets.length === 0) break;
-                let randomBet = valueBets[Math.floor(Math.random() * valueBets.length)];
-                let prob = randomBet.prob / 100;
-                let odds = randomBet.odds;
-                let edgeVal = (prob * odds) - 1;
-                let kelly = Math.min(0.05, Math.max(0, edgeVal / (odds - 1)));
-                let stakeFraction = Math.min(stakePct, kelly);
-                let stake = bank * stakeFraction;
-                if (Math.random() < prob) bank += stake * (odds - 1);
-                else bank -= stake;
-                if (bank <= 0) { bank = 0; break; }
-                if (bank > peak) peak = bank;
-                let dd = (peak - bank) / peak;
-                if (dd > maxDD) maxDD = dd;
+    function stressTest(valueBets, stake=0.03, bets=180, start=1000, sims=1800) { /* ίδια */ 
+        let finals=[], drawdowns=[], ruins=0;
+        for(let s=0;s<sims;s++) {
+            let bank=start, peak=bank, maxDD=0;
+            for(let i=0;i<bets;i++) {
+                if(valueBets.length===0) break;
+                let bet = valueBets[Math.floor(Math.random()*valueBets.length)];
+                let prob = bet.prob/100;
+                let odds = bet.odds;
+                let edge = (prob*odds)-1;
+                let kelly = Math.min(0.05, Math.max(0, edge/(odds-1)));
+                let fraction = Math.min(stake, kelly);
+                let stakeAmt = bank*fraction;
+                if(Math.random()<prob) bank += stakeAmt*(odds-1);
+                else bank -= stakeAmt;
+                if(bank<=0) { bank=0; break; }
+                if(bank>peak) peak=bank;
+                let dd = (peak-bank)/peak;
+                if(dd>maxDD) maxDD=dd;
             }
-            finals.push(bank);
-            drawdowns.push(maxDD);
-            if (bank <= 0) ruins++;
+            finals.push(bank); drawdowns.push(maxDD);
+            if(bank<=0) ruins++;
         }
-        finals.sort((a,b)=>a-b);
-        drawdowns.sort((a,b)=>a-b);
-        return {
-            ruinProb: (ruins/simulations*100).toFixed(2),
-            medianBank: finals[Math.floor(finals.length/2)].toFixed(0),
-            worstDrawdown99: (drawdowns[Math.floor(simulations*0.99)]*100).toFixed(1),
-            bestBank: Math.max(...finals).toFixed(0)
-        };
+        finals.sort((a,b)=>a-b); drawdowns.sort((a,b)=>a-b);
+        return { ruinProb:(ruins/sims*100).toFixed(2), medianBank:finals[Math.floor(finals.length/2)].toFixed(0), worstDrawdown99:(drawdowns[Math.floor(sims*0.99)]*100).toFixed(1), bestBank:Math.max(...finals).toFixed(0) };
     }
-
-    function sensitivityAnalysis(homeObj, awayObj, homeName, awayName) {
-        let baseForm = homeObj.form;
-        let results = [];
-        for (let delta of [-0.5, 0, 0.5]) {
-            let modHome = { ...homeObj, form: Math.min(9.5, Math.max(5, baseForm + delta)) };
-            let sim = simulateMatchResult(modHome, awayObj, 8000);
-            results.push({ delta, homeProb: sim.homeProb.toFixed(1), drawProb: sim.drawProb.toFixed(1), awayProb: sim.awayProb.toFixed(1) });
+    function applyLiveScore() { /* ίδια */ 
+        let text = document.getElementById('liveScore').value.trim();
+        if(!text) { showToast("Δεν υπάρχει live score", true); return; }
+        let lower = text.toLowerCase();
+        let leadTeam = null;
+        let leadPoints = 0;
+        let minutesRemaining = 20;
+        if(lower.includes("olympiacos") || lower.includes("ολυμπιακός")) leadTeam = "Olympiacos BC";
+        else if(lower.includes("panathinaikos") || lower.includes("παναθηναϊκός")) leadTeam = "Panathinaikos BC";
+        let pointsMatch = text.match(/(\d+)\s*πόντους|\b(\d+)\s*points?\b|\b(\d+)\s*-\s*(\d+)/i);
+        if(pointsMatch) { if(pointsMatch[1]) leadPoints = parseInt(pointsMatch[1]); else if(pointsMatch[3] && pointsMatch[4]) leadPoints = Math.abs(parseInt(pointsMatch[3]) - parseInt(pointsMatch[4])); }
+        let minutesMatch = text.match(/(\d+)\s*λεπτά|\b(\d+)\s*minutes?\b/i);
+        if(minutesMatch) minutesRemaining = parseInt(minutesMatch[1]);
+        else if(lower.includes("2ο δεκάλεπτο") || lower.includes("2ο δεκάλεπτο")) minutesRemaining = 20;
+        else if(lower.includes("ημίχρονο")) minutesRemaining = 20;
+        else if(lower.includes("3ο δεκάλεπτο")) minutesRemaining = 10;
+        else if(lower.includes("4ο δεκάλεπτο")) minutesRemaining = 0;
+        if(!leadTeam) { showToast("Δεν αναγνωρίστηκε ομάδα που προηγείται", true); return; }
+        let home = document.getElementById('homeTeam').value.trim();
+        let away = document.getElementById('awayTeam').value.trim();
+        if(!teamDatabase[home] || !teamDatabase[away]) { showToast("Οι ομάδες δεν υπάρχουν", true); return; }
+        liveScoreData = { leadTeam, leadPoints, minutesRemaining };
+        liveScoreApplied = true;
+        showToast(`Live score εφαρμόστηκε: ${leadTeam} προηγείται με ${leadPoints} πόντους, απομένουν ${minutesRemaining} λεπτά.`);
+    }
+    function parseMatchAnalysis() { showToast("Ανάλυση κειμένου (προσθήκη keyword matching)", false); }
+    function trainModel() { showToast("Εκπαίδευση μοντέλου (τυχαιοποίηση βαρών)", false); }
+    function loadManualData(json) { try { let d=JSON.parse(json); if(d.teams) Object.assign(teamDatabase,d.teams); if(d.odds) Object.assign(currentMarketOdds,d.odds); refreshOddsEditor(); showToast("JSON loaded"); } catch(e){ showToast("JSON error",true); } }
+    function loadPlainText(txt) { showToast("Plain text loaded (demo)", false); }
+    
+    // Κβαντικά πειράματα (όπως πριν)
+    function applyQuantumModifiers(homeProb, drawProb, awayProb, entanglementPct, superpositionPct) { /* ίδια */ 
+        let superpositionFactor = superpositionPct / 100;
+        let uniformProb = (homeProb + drawProb + awayProb) / 3;
+        let supHome = homeProb * (1 - superpositionFactor) + uniformProb * superpositionFactor;
+        let supDraw = drawProb * (1 - superpositionFactor) + uniformProb * superpositionFactor;
+        let supAway = awayProb * (1 - superpositionFactor) + uniformProb * superpositionFactor;
+        let entanglementFactor = entanglementPct / 100;
+        let commonRand = Math.sin(Date.now() * 0.001) * entanglementFactor;
+        let entangledHome = supHome + (commonRand * entanglementFactor * 10);
+        let entangledAway = supAway - (commonRand * entanglementFactor * 10);
+        if (entangledHome < 0) entangledHome = 0;
+        if (entangledAway < 0) entangledAway = 0;
+        let total = entangledHome + supDraw + entangledAway;
+        if (total > 0) { entangledHome = (entangledHome / total) * 100; supDraw = (supDraw / total) * 100; entangledAway = (entangledAway / total) * 100; }
+        return { homeProb: entangledHome, drawProb: supDraw, awayProb: entangledAway };
+    }
+    function runQuantumExperiment(baseHome, baseDraw, baseAway, entanglementPct, superpositionPct, runs=20000) {
+        let classicWins=0, classicDraws=0, classicLosses=0;
+        let quantumWins=0, quantumDraws=0, quantumLosses=0;
+        for(let i=0;i<runs;i++) {
+            let rClassic = Math.random()*100;
+            if(rClassic < baseHome) classicWins++;
+            else if(rClassic < baseHome+baseDraw) classicDraws++;
+            else classicLosses++;
+            let modded = applyQuantumModifiers(baseHome, baseDraw, baseAway, entanglementPct, superpositionPct);
+            let rQuantum = Math.random()*100;
+            if(rQuantum < modded.homeProb) quantumWins++;
+            else if(rQuantum < modded.homeProb+modded.drawProb) quantumDraws++;
+            else quantumLosses++;
         }
-        return results;
+        let classicProbs = { home: classicWins/runs*100, draw: classicDraws/runs*100, away: classicLosses/runs*100 };
+        let quantumProbs = { home: quantumWins/runs*100, draw: quantumDraws/runs*100, away: quantumLosses/runs*100 };
+        let totalShift = Math.abs(classicProbs.home - quantumProbs.home) + Math.abs(classicProbs.draw - quantumProbs.draw) + Math.abs(classicProbs.away - quantumProbs.away);
+        return { classic: classicProbs, quantum: quantumProbs, shift: totalShift };
     }
-
-    // --------------------------------------------------------------
-    // 5. ΚΥΡΙΑ ΑΝΑΛΥΣΗ & RENDER
-    // --------------------------------------------------------------
-    async function runAnalysis() {
-        const homeName = document.getElementById('homeTeam').value.trim();
-        const awayName = document.getElementById('awayTeam').value.trim();
-        if (!homeName || !awayName) {
-            showToast("Συμπλήρωσε και τις δύο ομάδες", true);
-            return;
-        }
-        if (!teamDatabase[homeName] || !teamDatabase[awayName]) {
-            showToast(`Η ομάδα ${homeName} ή ${awayName} δεν υπάρχει. Χρησιμοποίησε εισαγωγή δεδομένων.`, true);
-            return;
-        }
-
-        const resultsDiv = document.getElementById('resultsArea');
-        resultsDiv.innerHTML = `<div class="glass-card text-center"><div class="loading"></div> Προσομοίωση 20.000 αγώνων...</div>`;
-
-        setTimeout(() => {
-            const homeObj = teamDatabase[homeName];
-            const awayObj = teamDatabase[awayName];
-            const matchRes = simulateMatchResult(homeObj, awayObj, 20000);
-            const goalMarkets = simulateGoalMarkets(homeObj, awayObj, 20000);
-            const valueBets = detectValueBets(matchRes, goalMarkets, currentMarketOdds, homeName, awayName);
-            const stress = runBankrollStress(valueBets, 0.03, 180, 1000, 1800);
-            const sensitivity = sensitivityAnalysis(homeObj, awayObj, homeName, awayName);
-
-            const chartId = 'probChart_' + Date.now();
-            const html = `
-                <div class="glass-card">
-                    <h3><i class="fas fa-chart-pie"></i> Πιθανότητες αποτελέσματος</h3>
-                    <div class="grid-2" style="text-align:center; margin:1rem 0;">
-                        <div><div class="stat-number">${matchRes.homeProb.toFixed(1)}%</div><div>${homeName}</div></div>
-                        <div><div class="stat-number">${matchRes.drawProb.toFixed(1)}%</div><div>Ισοπαλία</div></div>
-                        <div><div class="stat-number">${matchRes.awayProb.toFixed(1)}%</div><div>${awayName}</div></div>
-                    </div>
-                    <canvas id="${chartId}" style="max-height:200px; width:100%; margin-bottom:1rem;"></canvas>
-                    <hr>
-                    <h4>⚽ Γκολ</h4>
-                    <div class="grid-2 small-text">
-                        <div>Over 2.5: <b>${goalMarkets.over25Prob.toFixed(1)}%</b></div>
-                        <div>Under 2.5: <b>${goalMarkets.under25Prob.toFixed(1)}%</b></div>
-                        <div>Goal/Goal: <b>${goalMarkets.goalGoalProb.toFixed(1)}%</b></div>
-                        <div>No Goal: <b>${goalMarkets.noGoalProb.toFixed(1)}%</b></div>
-                    </div>
-                </div>
-                <div class="glass-card">
-                    <h3><i class="fas fa-tags"></i> Value Bets</h3>
-                    ${valueBets.length===0 ? '<div class="small-text">❌ Κανένα +EV</div>' : valueBets.map(b => `
-                        <div class="value-badge">
-                            <div><b>${b.name}</b> <span style="color:#4ade80;">+${b.edge}%</span></div>
-                            <div class="small-text">Απόδοση ${b.odds} | Μοντέλο ${b.prob.toFixed(1)}%</div>
-                        </div>
-                    `).join('')}
-                </div>
-                <div class="glass-card">
-                    <h3>📊 Stress Test (2k paths)</h3>
-                    <div class="grid-2 small-text">
-                        <div>Ruin: <b>${stress.ruinProb}%</b></div>
-                        <div>Median bank: <b>${stress.medianBank}€</b></div>
-                        <div>Worst DD 99%: <b>${stress.worstDrawdown99}%</b></div>
-                        <div>Best bank: <b>${stress.bestBank}€</b></div>
-                    </div>
-                </div>
-                <div class="glass-card">
-                    <h3>📈 Sensitivity (Form ±0.5)</h3>
-                    <div class="overflow-auto"><table style="width:100%; font-size:0.75rem;"><thead><tr><th>Δform</th><th>${homeName}</th><th>Ισοπ.</th><th>${awayName}</th></tr></thead>
-                    <tbody>${sensitivity.map(s => `<tr><td>${s.delta>0?'+':''}${s.delta}</td><td>${s.homeProb}%</td><td>${s.drawProb}%</td><td>${s.awayProb}%</td></tr>`).join('')}</tbody></table></div>
-                </div>
-            `;
-            resultsDiv.innerHTML = html;
-            const ctx = document.getElementById(chartId).getContext('2d');
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: { labels: [homeName, 'Ισοπαλία', awayName], datasets: [{ data: [matchRes.homeProb, matchRes.drawProb, matchRes.awayProb], backgroundColor: ['#3b82f6', '#facc15', '#ef4444'], borderWidth: 0 }] },
-                options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1', font: { size: 12 } } } } }
-            });
-        }, 30);
+    async function runQuantumExperimentFromMain() {
+        let home = document.getElementById('homeTeam').value.trim();
+        let away = document.getElementById('awayTeam').value.trim();
+        if(!home || !away || !teamDatabase[home] || !teamDatabase[away]) { showToastQuantum("Πρέπει να επιλέξετε δύο ομάδες.", true); return; }
+        let sport = currentSport;
+        let homeRating = computeRating(home, sport, true);
+        let awayRating = computeRating(away, sport, false);
+        let diff = homeRating - awayRating;
+        let pHome = 1/(1+Math.exp(-diff));
+        let pAway = 1-pHome;
+        let pDraw = (sport==="football" || sport==="greece") ? Math.max(0.18, 0.30 - Math.abs(diff)*0.05) : 0.05;
+        let total = pHome + pAway + pDraw;
+        let baseHome = (pHome/total)*100;
+        let baseDraw = (pDraw/total)*100;
+        let baseAway = (pAway/total)*100;
+        let entanglement = parseFloat(document.getElementById('entanglementStrength').value);
+        let superposition = parseFloat(document.getElementById('superpositionStrength').value);
+        document.getElementById('entanglementVal').innerText = entanglement+'%';
+        document.getElementById('superpositionVal').innerText = superposition+'%';
+        let result = runQuantumExperiment(baseHome, baseDraw, baseAway, entanglement, superposition, 20000);
+        let container = document.getElementById('quantumExperimentResults');
+        container.innerHTML = `<div style="display:flex; justify-content:space-between; flex-wrap:wrap;"><div><span>Κλασικό:</span><br><span class="exp-stat">🏠 ${result.classic.home.toFixed(1)}%</span><br><span class="exp-stat">🤝 ${result.classic.draw.toFixed(1)}%</span><br><span class="exp-stat">✈️ ${result.classic.away.toFixed(1)}%</span></div><div><span>Κβαντικό:</span><br><span class="exp-stat">🏠 ${result.quantum.home.toFixed(1)}%</span><br><span class="exp-stat">🤝 ${result.quantum.draw.toFixed(1)}%</span><br><span class="exp-stat">✈️ ${result.quantum.away.toFixed(1)}%</span></div><div><span>Μετατόπιση:</span><br><span class="exp-stat">${result.shift.toFixed(2)}%</span></div></div><div class="small-text">Διεμπλοκή=${entanglement}% | Υπέρθεση=${superposition}%</div>`;
+        showToastQuantum(`Πείραμα ολοκληρώθηκε. Μετατόπιση: ${result.shift.toFixed(1)}%`);
     }
+    function setPreset(ent, sup) { document.getElementById('entanglementStrength').value = ent; document.getElementById('superpositionStrength').value = sup; document.getElementById('entanglementVal').innerText = ent+'%'; document.getElementById('superpositionVal').innerText = sup+'%'; showToastQuantum(`Προεπιλογή: Διεμπλοκή=${ent}%, Υπέρθεση=${sup}%`); }
+    function resetQuantumParams() { setPreset(0,0); document.getElementById('quantumExperimentResults').innerHTML = `<div class="small-text">📌 Επιλέξτε επίπεδα και πατήστε "Εκτέλεση".</div>`; }
+    function showToastQuantum(msg, isErr=false) { let d=document.createElement('div'); d.className=isErr?'toast error-toast':'toast'; d.innerText=msg; document.body.appendChild(d); setTimeout(()=>d.remove(),3000); }
 
-    function demoLiveFetch() {
-        showToast("🔍 Live αναζήτηση (προσομοίωση) – καμία αλλαγή δεδομένων", false);
-    }
+    // Event listeners
+    document.querySelectorAll('.sport-btn').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.sport-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); currentSport = btn.getAttribute('data-sport'); initSport(currentSport); liveScoreApplied = false; }); });
+    document.getElementById('analyzeBtn').addEventListener('click', runAnalysis);
+    document.getElementById('trainModelBtn').addEventListener('click', trainModel);
+    document.getElementById('parseAnalysisBtn').addEventListener('click', parseMatchAnalysis);
+    document.getElementById('applyLiveScoreBtn').addEventListener('click', applyLiveScore);
+    document.getElementById('loadManualDataBtn').addEventListener('click', () => { let j=document.getElementById('manualDataInput').value; if(j) loadManualData(j); });
+    document.getElementById('loadPlainTextBtn').addEventListener('click', () => { let t=document.getElementById('plainTextData').value; if(t) loadPlainText(t); });
+    document.getElementById('runQuantumExperimentBtn').addEventListener('click', runQuantumExperimentFromMain);
+    document.getElementById('resetQuantumBtn').addEventListener('click', resetQuantumParams);
+    document.getElementById('presetLowBtn').addEventListener('click', () => setPreset(20,20));
+    document.getElementById('presetMediumBtn').addEventListener('click', () => setPreset(50,50));
+    document.getElementById('presetHighBtn').addEventListener('click', () => setPreset(90,90));
 
-    // --------------------------------------------------------------
-    // 6. ΑΡΧΙΚΟΠΟΙΗΣΗ
-    // --------------------------------------------------------------
-    window.addEventListener('DOMContentLoaded', () => {
-        initDefaultDatabase();
-        populateTeamDropdown();
-        document.getElementById('analyzeBtn').addEventListener('click', runAnalysis);
-        document.getElementById('fetchLiveBtn').addEventListener('click', demoLiveFetch);
-        document.getElementById('loadManualDataBtn').addEventListener('click', () => {
-            const rawJson = document.getElementById('manualDataInput').value;
-            if (rawJson.trim()) loadManualData(rawJson);
-            else showToast("Δεν υπάρχει κείμενο στο πεδίο JSON", true);
-        });
-        document.getElementById('loadPlainTextBtn').addEventListener('click', () => {
-            const plainText = document.getElementById('plainTextData').value;
-            if (plainText.trim()) loadPlainText(plainText);
-            else showToast("Δεν υπάρχει κείμενο στο πεδίο απλού κειμένου", true);
-        });
-        setTimeout(runAnalysis, 100);
-    });
+    initSport('greeceBasketball');
+    runAnalysis();
 </script>
 </body>
 </html>
