@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>GKARAS ROBOTICS MUNDIAL PREDICTOR</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: radial-gradient(circle at 10% 20%, #0b1120, #0a0f1a);
+            font-family: 'Inter', sans-serif;
+            color: #eef2ff;
+            padding: 1rem;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .glass-card {
+            background: rgba(15, 25, 45, 0.75);
+            backdrop-filter: blur(12px);
+            border-radius: 1.5rem;
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.4);
+        }
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .team-select {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 2rem;
+            padding: 0.75rem 1rem;
+            color: white;
+            font-weight: 500;
+            width: 100%;
+            font-size: 1rem;
+        }
+        .team-select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+        }
+        .btn-primary, .btn-secondary {
+            border: none;
+            border-radius: 2rem;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.9rem;
+        }
+        .btn-primary {
+            background: linear-gradient(95deg, #2563eb, #3b82f6);
+            color: white;
+        }
+        .btn-secondary {
+            background: #1e293b;
+            border: 1px solid #475569;
+            color: #e2e8f0;
+        }
+        .btn-primary:active, .btn-secondary:active {
+            transform: scale(0.97);
+        }
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(145deg, #f8fafc, #94a3b8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .value-badge {
+            background: rgba(34,197,94,0.12);
+            border-left: 4px solid #22c55e;
+            padding: 0.75rem;
+            border-radius: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        textarea {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 1.2rem;
+            padding: 0.8rem;
+            color: #cbd5e6;
+            font-family: monospace;
+            font-size: 0.8rem;
+            width: 100%;
+            resize: vertical;
+        }
+        .flex-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            align-items: center;
+            justify-content: center;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        @media (min-width: 768px) {
+            body { padding: 2rem; }
+            .grid-2 { grid-template-columns: 1fr 1fr; }
+            .stat-number { font-size: 2.2rem; }
+            h1 { font-size: 2rem; }
+        }
+        .loading {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.6s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 12px;
+            border-radius: 40px;
+            text-align: center;
+            z-index: 9999;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .error-toast { background: #ef4444; }
+        .small-text { font-size: 0.7rem; color: #94a3b8; }
+        details { margin-top: 1rem; }
+        summary { cursor: pointer; font-weight: 600; color: #94a3b8; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="glass-card">
+        <div class="flex-row" style="justify-content: space-between;">
+            <div>
+                <h1><i class="fas fa-robot"></i> GKARAS ROBOTICS MUNDIAL PREDICTOR</h1>
+                <p class="small-text">Monte Carlo + Kelly + Offline Import (JSON & Plain Text)</p>
+            </div>
+            <button id="fetchLiveBtn" class="btn-secondary"><i class="fas fa-globe"></i> Live (demo)</button>
+        </div>
+
+        <!-- Επιλογή ομάδων -->
+        <div class="grid-2" style="margin: 1.2rem 0;">
+            <div>
+                <label><i class="fas fa-home"></i> Γηπεδούχος</label>
+                <input list="teamsList" id="homeTeam" class="team-select" placeholder="Επέλεξε ομάδα" value="Spain">
+            </div>
+            <div>
+                <label><i class="fas fa-futbol"></i> Φιλοξενούμενος</label>
+                <input list="teamsList" id="awayTeam" class="team-select" placeholder="Επέλεξε ομάδα" value="Germany">
+            </div>
+        </div>
+        <datalist id="teamsList"></datalist>
+
+        <div class="flex-row" style="justify-content: center; margin-bottom: 1rem;">
+            <button id="analyzeBtn" class="btn-primary"><i class="fas fa-brain"></i> Ανάλυση Monte Carlo</button>
+        </div>
+
+        <!-- Χειροκίνητη εισαγωγή δεδομένων - δύο πεδία -->
+        <details open>
+            <summary><i class="fas fa-file-import"></i> 📂 Χειροκίνητη εισαγωγή δεδομένων</summary>
+            <div style="margin-top: 1rem;">
+                <!-- 1ο πεδίο: JSON (κώδικας) -->
+                <div style="margin-bottom: 1.5rem;">
+                    <p class="small-text"><strong>1. Μορφή JSON (για προχωρημένους)</strong><br>Επικόλλησε ακριβή δεδομένα σε JSON.</p>
+                    <textarea id="manualDataInput" rows="4" placeholder='{
+  "teams": {
+    "Spain": {"form":9.0,"fatigue":7.0,"defense":8.5,"attack":9.0,"motivation":8.5},
+    "Germany": {"form":8.5,"fatigue":7.2,"defense":8.1,"attack":8.5,"motivation":8.5}
+  },
+  "odds": {"homeWin":2.10,"draw":3.25,"awayWin":3.40,"over25":1.95,"under25":1.85,"goalGoal":1.90,"noGoal":1.90}
+}'></textarea>
+                    <div class="flex-row" style="justify-content: flex-end; margin-top: 0.5rem;">
+                        <button id="loadManualDataBtn" class="btn-secondary"><i class="fas fa-upload"></i> Φόρτωση JSON</button>
+                    </div>
+                </div>
+
+                <!-- 2ο πεδίο: Απλό κείμενο (φυσική γλώσσα / δομημένο απλό κείμενο) -->
+                <div>
+                    <p class="small-text"><strong>2. Απλό κείμενο (χωρίς κώδικα)</strong><br>
+                    Γράψε ή επικόλλησε δεδομένα σε απλή μορφή. Κάθε γραμμή: <code>Ομάδα, form, fatigue, defense, attack, motivation</code><br>
+                    Για τις αποδόσεις, γράψε μια γραμμή: <code>odds: homeWin, draw, awayWin, over25, under25, goalGoal, noGoal</code><br>
+                    Παράδειγμα:<br>
+                    <code>Spain, 9.0, 7.0, 8.5, 9.0, 8.5</code><br>
+                    <code>Germany, 8.5, 7.2, 8.1, 8.5, 8.5</code><br>
+                    <code>odds: 2.10, 3.25, 3.40, 1.95, 1.85, 1.90, 1.90</code>
+                    </p>
+                    <textarea id="plainTextData" rows="5" placeholder="Spain, 9.0, 7.0, 8.5, 9.0, 8.5&#10;Germany, 8.5, 7.2, 8.1, 8.5, 8.5&#10;odds: 2.10, 3.25, 3.40, 1.95, 1.85, 1.90, 1.90"></textarea>
+                    <div class="flex-row" style="justify-content: flex-end; margin-top: 0.5rem;">
+                        <button id="loadPlainTextBtn" class="btn-secondary"><i class="fas fa-file-alt"></i> Φόρτωση από κείμενο</button>
+                    </div>
+                </div>
+                <p class="small-text" style="margin-top: 0.5rem;">✔️ Τα δεδομένα αντικαθιστούν τα προεπιλεγμένα. Η εφαρμογή λειτουργεί πλήρως offline.</p>
+            </div>
+        </details>
+    </div>
+
+    <!-- Αποτελέσματα -->
+    <div id="resultsArea">
+        <div class="glass-card text-center">🔄 Επέλεξε ομάδες και πάτα "Ανάλυση"</div>
+    </div>
+</div>
+
+<script>
+    // --------------------------------------------------------------
+    // 1. ΠΡΟΕΠΙΛΕΓΜΕΝΕΣ ΟΜΑΔΕΣ (30+)
+    // --------------------------------------------------------------
+    const MASTER_TEAMS_LIST = [
+        "Argentina", "Brazil", "France", "Spain", "England", "Germany", "Netherlands", "Portugal", "Belgium", "Italy",
+        "Croatia", "Mexico", "USA", "Canada", "Morocco", "Senegal", "Japan", "South Korea", "Australia", "Uruguay",
+        "Colombia", "Chile", "Switzerland", "Denmark", "Sweden", "Poland", "Wales", "Serbia", "Greece", "Nigeria"
+    ];
+
+    const DEFAULT_ATTR = { form: 7.5, fatigue: 7.5, defense: 7.5, attack: 7.5, motivation: 7.5 };
+    let teamDatabase = {};
+    let currentMarketOdds = {
+        homeWin: 2.10, draw: 3.25, awayWin: 3.40,
+        over25: 1.95, under25: 1.85,
+        goalGoal: 1.90, noGoal: 1.90
+    };
+
+    function showToast(msg, isError = false) {
+        const toast = document.createElement('div');
+        toast.className = isError ? 'toast error-toast' : 'toast';
+        toast.innerText = msg;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+
+    function initDefaultDatabase() {
+        for (let t of MASTER_TEAMS_LIST) {
+            teamDatabase[t] = { ...DEFAULT_ATTR };
+        }
+        const specials = {
+            "Spain": { form:9.0, fatigue:7.0, defense:8.5, attack:9.0, motivation:8.5 },
+            "France": { form:8.8, fatigue:7.2, defense:8.2, attack:8.8, motivation:8.5 },
+            "Germany": { form:8.5, fatigue:7.2, defense:8.1, attack:8.5, motivation:8.5 },
+            "Brazil": { form:8.7, fatigue:7.3, defense:8.3, attack:8.9, motivation:9.0 },
+            "Argentina": { form:8.7, fatigue:7.4, defense:8.4, attack:8.5, motivation:9.2 },
+            "England": { form:8.6, fatigue:7.1, defense:8.0, attack:8.6, motivation:8.5 },
+            "Portugal": { form:8.3, fatigue:7.6, defense:7.9, attack:8.4, motivation:8.2 },
+            "Netherlands": { form:8.2, fatigue:7.5, defense:8.0, attack:8.2, motivation:8.3 },
+            "Mexico": { form:8.5, fatigue:8.0, defense:7.5, attack:8.3, motivation:9.5 },
+            "USA": { form:7.0, fatigue:8.2, defense:5.5, attack:8.5, motivation:8.8 },
+            "Canada": { form:8.8, fatigue:8.5, defense:8.5, attack:7.0, motivation:9.0 },
+            "Belgium": { form:7.8, fatigue:7.9, defense:6.8, attack:8.8, motivation:8.0 }
+        };
+        for (let [team, attrs] of Object.entries(specials)) {
+            if (teamDatabase[team]) teamDatabase[team] = { ...attrs };
+        }
+    }
+
+    function populateTeamDropdown() {
+        const datalist = document.getElementById('teamsList');
+        if (!datalist) return;
+        datalist.innerHTML = '';
+        MASTER_TEAMS_LIST.forEach(team => {
+            const option = document.createElement('option');
+            option.value = team;
+            datalist.appendChild(option);
+        });
+    }
+
+    // --------------------------------------------------------------
+    // 2. ΦΟΡΤΩΣΗ ΑΠΟ JSON (κώδικας)
+    // --------------------------------------------------------------
+    function loadManualData(jsonText) {
+        try {
+            const data = JSON.parse(jsonText);
+            if (data.teams && typeof data.teams === 'object') {
+                for (let [teamName, attrs] of Object.entries(data.teams)) {
+                    if (attrs.form && attrs.fatigue && attrs.defense && attrs.attack && attrs.motivation) {
+                        teamDatabase[teamName] = { ...attrs };
+                        if (!MASTER_TEAMS_LIST.includes(teamName)) {
+                            MASTER_TEAMS_LIST.push(teamName);
+                            const datalist = document.getElementById('teamsList');
+                            const opt = document.createElement('option');
+                            opt.value = teamName;
+                            datalist.appendChild(opt);
+                        }
+                    } else {
+                        throw new Error("Missing attributes for team " + teamName);
+                    }
+                }
+            }
+            if (data.odds && typeof data.odds === 'object') {
+                currentMarketOdds = { ...currentMarketOdds, ...data.odds };
+            }
+            showToast("✅ JSON φορτώθηκε επιτυχώς!");
+            return true;
+        } catch (e) {
+            showToast("❌ Σφάλμα JSON: " + e.message, true);
+            return false;
+        }
+    }
+
+    // --------------------------------------------------------------
+    // 3. ΦΟΡΤΩΣΗ ΑΠΟ ΑΠΛΟ ΚΕΙΜΕΝΟ (plain text)
+    // --------------------------------------------------------------
+    function loadPlainText(text) {
+        const lines = text.split(/\r?\n/);
+        let newTeams = {};
+        let newOdds = null;
+        for (let line of lines) {
+            line = line.trim();
+            if (line === "") continue;
+            // Odds line: starts with "odds:" or "odds :"
+            if (line.toLowerCase().startsWith("odds")) {
+                let parts = line.split(/[:,]/).slice(1).join(',').split(',').map(s => parseFloat(s.trim()));
+                if (parts.length >= 7 && parts.every(v => !isNaN(v))) {
+                    newOdds = {
+                        homeWin: parts[0], draw: parts[1], awayWin: parts[2],
+                        over25: parts[3], under25: parts[4], goalGoal: parts[5], noGoal: parts[6]
+                    };
+                } else {
+                    showToast("⚠️ Η γραμμή odds δεν έχει 7 αριθμούς, αγνοήθηκε.", true);
+                }
+                continue;
+            }
+            // Normal team line: team, form, fatigue, defense, attack, motivation
+            let tokens = line.split(',').map(s => s.trim());
+            if (tokens.length >= 6) {
+                let teamName = tokens[0];
+                let form = parseFloat(tokens[1]);
+                let fatigue = parseFloat(tokens[2]);
+                let defense = parseFloat(tokens[3]);
+                let attack = parseFloat(tokens[4]);
+                let motivation = parseFloat(tokens[5]);
+                if (isNaN(form) || isNaN(fatigue) || isNaN(defense) || isNaN(attack) || isNaN(motivation)) {
+                    showToast(`⚠️ Η γραμμή "${line}" περιέχει μη αριθμητικές τιμές, αγνοήθηκε.`, true);
+                    continue;
+                }
+                newTeams[teamName] = { form, fatigue, defense, attack, motivation };
+            } else {
+                showToast(`⚠️ Η γραμμή "${line}" δεν αναγνωρίστηκε (χρειάζονται 6 τιμές).`, true);
+            }
+        }
+        if (Object.keys(newTeams).length > 0) {
+            for (let [team, attrs] of Object.entries(newTeams)) {
+                teamDatabase[team] = attrs;
+                if (!MASTER_TEAMS_LIST.includes(team)) {
+                    MASTER_TEAMS_LIST.push(team);
+                    const datalist = document.getElementById('teamsList');
+                    const opt = document.createElement('option');
+                    opt.value = team;
+                    datalist.appendChild(opt);
+                }
+            }
+            showToast(`✅ Φορτώθηκαν ${Object.keys(newTeams).length} ομάδες από απλό κείμενο.`);
+        } else {
+            showToast("⚠️ Δεν βρέθηκαν έγκυρες γραμμές ομάδων.", true);
+        }
+        if (newOdds) {
+            currentMarketOdds = { ...currentMarketOdds, ...newOdds };
+            showToast("✅ Οι αποδόσεις ενημερώθηκαν από το κείμενο.");
+        }
+    }
+
+    // --------------------------------------------------------------
+    // 4. MONTE CARLO CORE (ίδια με πριν)
+    // --------------------------------------------------------------
+    function baseScore(team, homeAdv = false) {
+        let s = team.form * 0.20 + team.fatigue * 0.15 + team.defense * 0.25 + team.attack * 0.25 + team.motivation * 0.15;
+        if (homeAdv) s += 0.15;
+        return s;
+    }
+    function randomNoise() { return (Math.random() - 0.5) * 0.8; }
+    function poissonRandom(lambda) {
+        let L = Math.exp(-lambda);
+        let p = 1.0, k = 0;
+        do { k++; p *= Math.random(); } while (p > L);
+        return k - 1;
+    }
+
+    function simulateMatchResult(homeObj, awayObj, runs = 20000) {
+        let homeWins = 0, draws = 0, awayWins = 0;
+        for (let i = 0; i < runs; i++) {
+            let hRat = baseScore(homeObj, true) + randomNoise();
+            let aRat = baseScore(awayObj, false) + randomNoise();
+            let diff = hRat - aRat;
+            let pHome = 1 / (1 + Math.exp(-diff));
+            let pAway = 1 - pHome;
+            let pDraw = Math.max(0.18, 0.30 - Math.abs(diff) * 0.05);
+            let total = pHome + pAway + pDraw;
+            let r = Math.random() * total;
+            if (r < pHome) homeWins++;
+            else if (r < pHome + pDraw) draws++;
+            else awayWins++;
+        }
+        return { homeProb: homeWins/runs*100, drawProb: draws/runs*100, awayProb: awayWins/runs*100 };
+    }
+
+    function simulateGoalMarkets(homeObj, awayObj, runs = 20000) {
+        let homeBase = baseScore(homeObj, true);
+        let awayBase = baseScore(awayObj, false);
+        let homeLambda = Math.max(0.4, homeBase * 0.42);
+        let awayLambda = Math.max(0.3, awayBase * 0.38);
+        let over25 = 0, goalGoal = 0;
+        for (let i = 0; i < runs; i++) {
+            let hg = poissonRandom(homeLambda);
+            let ag = poissonRandom(awayLambda);
+            if (hg + ag > 2.5) over25++;
+            if (hg > 0 && ag > 0) goalGoal++;
+        }
+        return {
+            over25Prob: over25/runs*100,
+            under25Prob: (1 - over25/runs)*100,
+            goalGoalProb: goalGoal/runs*100,
+            noGoalProb: (1 - goalGoal/runs)*100
+        };
+    }
+
+    function detectValueBets(matchProbs, goalProbs, odds, homeName, awayName) {
+        let bets = [];
+        let homeImp = (1/odds.homeWin)*100;
+        let drawImp = (1/odds.draw)*100;
+        let awayImp = (1/odds.awayWin)*100;
+        if (matchProbs.homeProb > homeImp) bets.push({ name:`Νίκη ${homeName}`, odds: odds.homeWin, prob: matchProbs.homeProb, edge: (matchProbs.homeProb - homeImp).toFixed(1) });
+        if (matchProbs.drawProb > drawImp) bets.push({ name:"Ισοπαλία", odds: odds.draw, prob: matchProbs.drawProb, edge: (matchProbs.drawProb - drawImp).toFixed(1) });
+        if (matchProbs.awayProb > awayImp) bets.push({ name:`Νίκη ${awayName}`, odds: odds.awayWin, prob: matchProbs.awayProb, edge: (matchProbs.awayProb - awayImp).toFixed(1) });
+        let overImp = (1/odds.over25)*100;
+        let underImp = (1/odds.under25)*100;
+        if (goalProbs.over25Prob > overImp) bets.push({ name:"Over 2.5", odds: odds.over25, prob: goalProbs.over25Prob, edge: (goalProbs.over25Prob - overImp).toFixed(1) });
+        if (goalProbs.under25Prob > underImp) bets.push({ name:"Under 2.5", odds: odds.under25, prob: goalProbs.under25Prob, edge: (goalProbs.under25Prob - underImp).toFixed(1) });
+        let ggImp = (1/odds.goalGoal)*100;
+        let ngImp = (1/odds.noGoal)*100;
+        if (goalProbs.goalGoalProb > ggImp) bets.push({ name:"Goal/Goal", odds: odds.goalGoal, prob: goalProbs.goalGoalProb, edge: (goalProbs.goalGoalProb - ggImp).toFixed(1) });
+        if (goalProbs.noGoalProb > ngImp) bets.push({ name:"No Goal", odds: odds.noGoal, prob: goalProbs.noGoalProb, edge: (goalProbs.noGoalProb - ngImp).toFixed(1) });
+        return bets;
+    }
+
+    function runBankrollStress(valueBets, stakePct = 0.03, bets = 200, start = 1000, simulations = 1800) {
+        let finals = [];
+        let drawdowns = [];
+        let ruins = 0;
+        for (let sim = 0; sim < simulations; sim++) {
+            let bank = start;
+            let peak = bank;
+            let maxDD = 0;
+            for (let i=0; i<bets; i++) {
+                if (valueBets.length === 0) break;
+                let randomBet = valueBets[Math.floor(Math.random() * valueBets.length)];
+                let prob = randomBet.prob / 100;
+                let odds = randomBet.odds;
+                let edgeVal = (prob * odds) - 1;
+                let kelly = Math.min(0.05, Math.max(0, edgeVal / (odds - 1)));
+                let stakeFraction = Math.min(stakePct, kelly);
+                let stake = bank * stakeFraction;
+                if (Math.random() < prob) bank += stake * (odds - 1);
+                else bank -= stake;
+                if (bank <= 0) { bank = 0; break; }
+                if (bank > peak) peak = bank;
+                let dd = (peak - bank) / peak;
+                if (dd > maxDD) maxDD = dd;
+            }
+            finals.push(bank);
+            drawdowns.push(maxDD);
+            if (bank <= 0) ruins++;
+        }
+        finals.sort((a,b)=>a-b);
+        drawdowns.sort((a,b)=>a-b);
+        return {
+            ruinProb: (ruins/simulations*100).toFixed(2),
+            medianBank: finals[Math.floor(finals.length/2)].toFixed(0),
+            worstDrawdown99: (drawdowns[Math.floor(simulations*0.99)]*100).toFixed(1),
+            bestBank: Math.max(...finals).toFixed(0)
+        };
+    }
+
+    function sensitivityAnalysis(homeObj, awayObj, homeName, awayName) {
+        let baseForm = homeObj.form;
+        let results = [];
+        for (let delta of [-0.5, 0, 0.5]) {
+            let modHome = { ...homeObj, form: Math.min(9.5, Math.max(5, baseForm + delta)) };
+            let sim = simulateMatchResult(modHome, awayObj, 8000);
+            results.push({ delta, homeProb: sim.homeProb.toFixed(1), drawProb: sim.drawProb.toFixed(1), awayProb: sim.awayProb.toFixed(1) });
+        }
+        return results;
+    }
+
+    // --------------------------------------------------------------
+    // 5. ΚΥΡΙΑ ΑΝΑΛΥΣΗ & RENDER
+    // --------------------------------------------------------------
+    async function runAnalysis() {
+        const homeName = document.getElementById('homeTeam').value.trim();
+        const awayName = document.getElementById('awayTeam').value.trim();
+        if (!homeName || !awayName) {
+            showToast("Συμπλήρωσε και τις δύο ομάδες", true);
+            return;
+        }
+        if (!teamDatabase[homeName] || !teamDatabase[awayName]) {
+            showToast(`Η ομάδα ${homeName} ή ${awayName} δεν υπάρχει. Χρησιμοποίησε εισαγωγή δεδομένων.`, true);
+            return;
+        }
+
+        const resultsDiv = document.getElementById('resultsArea');
+        resultsDiv.innerHTML = `<div class="glass-card text-center"><div class="loading"></div> Προσομοίωση 20.000 αγώνων...</div>`;
+
+        setTimeout(() => {
+            const homeObj = teamDatabase[homeName];
+            const awayObj = teamDatabase[awayName];
+            const matchRes = simulateMatchResult(homeObj, awayObj, 20000);
+            const goalMarkets = simulateGoalMarkets(homeObj, awayObj, 20000);
+            const valueBets = detectValueBets(matchRes, goalMarkets, currentMarketOdds, homeName, awayName);
+            const stress = runBankrollStress(valueBets, 0.03, 180, 1000, 1800);
+            const sensitivity = sensitivityAnalysis(homeObj, awayObj, homeName, awayName);
+
+            const chartId = 'probChart_' + Date.now();
+            const html = `
+                <div class="glass-card">
+                    <h3><i class="fas fa-chart-pie"></i> Πιθανότητες αποτελέσματος</h3>
+                    <div class="grid-2" style="text-align:center; margin:1rem 0;">
+                        <div><div class="stat-number">${matchRes.homeProb.toFixed(1)}%</div><div>${homeName}</div></div>
+                        <div><div class="stat-number">${matchRes.drawProb.toFixed(1)}%</div><div>Ισοπαλία</div></div>
+                        <div><div class="stat-number">${matchRes.awayProb.toFixed(1)}%</div><div>${awayName}</div></div>
+                    </div>
+                    <canvas id="${chartId}" style="max-height:200px; width:100%; margin-bottom:1rem;"></canvas>
+                    <hr>
+                    <h4>⚽ Γκολ</h4>
+                    <div class="grid-2 small-text">
+                        <div>Over 2.5: <b>${goalMarkets.over25Prob.toFixed(1)}%</b></div>
+                        <div>Under 2.5: <b>${goalMarkets.under25Prob.toFixed(1)}%</b></div>
+                        <div>Goal/Goal: <b>${goalMarkets.goalGoalProb.toFixed(1)}%</b></div>
+                        <div>No Goal: <b>${goalMarkets.noGoalProb.toFixed(1)}%</b></div>
+                    </div>
+                </div>
+                <div class="glass-card">
+                    <h3><i class="fas fa-tags"></i> Value Bets</h3>
+                    ${valueBets.length===0 ? '<div class="small-text">❌ Κανένα +EV</div>' : valueBets.map(b => `
+                        <div class="value-badge">
+                            <div><b>${b.name}</b> <span style="color:#4ade80;">+${b.edge}%</span></div>
+                            <div class="small-text">Απόδοση ${b.odds} | Μοντέλο ${b.prob.toFixed(1)}%</div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="glass-card">
+                    <h3>📊 Stress Test (2k paths)</h3>
+                    <div class="grid-2 small-text">
+                        <div>Ruin: <b>${stress.ruinProb}%</b></div>
+                        <div>Median bank: <b>${stress.medianBank}€</b></div>
+                        <div>Worst DD 99%: <b>${stress.worstDrawdown99}%</b></div>
+                        <div>Best bank: <b>${stress.bestBank}€</b></div>
+                    </div>
+                </div>
+                <div class="glass-card">
+                    <h3>📈 Sensitivity (Form ±0.5)</h3>
+                    <div class="overflow-auto"><table style="width:100%; font-size:0.75rem;"><thead><tr><th>Δform</th><th>${homeName}</th><th>Ισοπ.</th><th>${awayName}</th></tr></thead>
+                    <tbody>${sensitivity.map(s => `<tr><td>${s.delta>0?'+':''}${s.delta}</td><td>${s.homeProb}%</td><td>${s.drawProb}%</td><td>${s.awayProb}%</td></tr>`).join('')}</tbody></table></div>
+                </div>
+            `;
+            resultsDiv.innerHTML = html;
+            const ctx = document.getElementById(chartId).getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: { labels: [homeName, 'Ισοπαλία', awayName], datasets: [{ data: [matchRes.homeProb, matchRes.drawProb, matchRes.awayProb], backgroundColor: ['#3b82f6', '#facc15', '#ef4444'], borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1', font: { size: 12 } } } } }
+            });
+        }, 30);
+    }
+
+    function demoLiveFetch() {
+        showToast("🔍 Live αναζήτηση (προσομοίωση) – καμία αλλαγή δεδομένων", false);
+    }
+
+    // --------------------------------------------------------------
+    // 6. ΑΡΧΙΚΟΠΟΙΗΣΗ
+    // --------------------------------------------------------------
+    window.addEventListener('DOMContentLoaded', () => {
+        initDefaultDatabase();
+        populateTeamDropdown();
+        document.getElementById('analyzeBtn').addEventListener('click', runAnalysis);
+        document.getElementById('fetchLiveBtn').addEventListener('click', demoLiveFetch);
+        document.getElementById('loadManualDataBtn').addEventListener('click', () => {
+            const rawJson = document.getElementById('manualDataInput').value;
+            if (rawJson.trim()) loadManualData(rawJson);
+            else showToast("Δεν υπάρχει κείμενο στο πεδίο JSON", true);
+        });
+        document.getElementById('loadPlainTextBtn').addEventListener('click', () => {
+            const plainText = document.getElementById('plainTextData').value;
+            if (plainText.trim()) loadPlainText(plainText);
+            else showToast("Δεν υπάρχει κείμενο στο πεδίο απλού κειμένου", true);
+        });
+        setTimeout(runAnalysis, 100);
+    });
+</script>
+</body>
+</html>
